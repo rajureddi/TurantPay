@@ -1,6 +1,5 @@
 ---
-
-### **TurantPay: Smart UI for Offline UPI Payments**
+ **TurantPay: Smart UI for Offline UPI Payments**
 
 **TurantPay** is a modern Android utility designed to bridge the gap between digital payments and offline accessibility. It provides a professional Graphical User Interface (GUI) over the official *99# USSD framework provided by NPCI, making offline banking as easy as a smartphone app.
 
