@@ -1,6 +1,4 @@
-For your GitHub repository, the **README.md** file is your project's "resume." Since you are building a fintech app that handles sensitive banking data (even though it's offline), your README needs to look professional, secure, and clear for both developers and recruiters.
 
-Here is a ready-to-use template for **TurantPay**.
 
 ---
 
