@@ -1,3 +1,4 @@
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=rajureddi&label=Repo%20views&color=0e75b6&style=flat" alt="rajureddi" /> </p>
 
  ## **TurantPay: Smart UI for Offline UPI Payments**
 
