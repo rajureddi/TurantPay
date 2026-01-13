@@ -1,5 +1,3 @@
-
-
 ---
 
 ### **TurantPay: Smart UI for Offline UPI Payments**
@@ -16,10 +14,9 @@
 * Sending money via Mobile Number or VPA.
 * Checking Bank Balance instantly.
 * Viewing Mini-Statements.
-
-
-* **Multilingual:** Support for major Indian regional languages.
 * **Privacy Focused:** Zero server-side storage of sensitive data (PINs or Account details).
+* Pins and Details are entered in ussd response apps wont have any android level permission to read that safely you can see.
+
 
 ### **🛠️ Technology Stack**
 
@@ -27,6 +24,11 @@
 * **Framework:** Android SDK
 * **Integration:** NPCI *99# (USSD) Protocol
 * **Tools:** CameraX (for QR Scanning), Material Design 3
+### **DEMO
+
+
+https://github.com/user-attachments/assets/b0dc4816-ee0a-473c-b60c-84e898862e6c
+
 
 ### **📲 How It Works**
 
