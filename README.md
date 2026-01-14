@@ -15,7 +15,7 @@
 * Checking Bank Balance instantly.
 * Viewing Mini-Statements.
 * **Privacy Focused:** Zero server-side storage of sensitive data (PINs or Account details).
-* Pins and Details are entered in ussd response apps wont have any android level permission to read that safely you can see.
+* Pins and Details are entered in USSD response.Apps wont have any android level permission to read ussd response .You can safely Download and Use.
 ---
 
 ### **🛠️ Technology Stack**
