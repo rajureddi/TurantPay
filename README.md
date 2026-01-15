@@ -42,8 +42,9 @@ TurantPay automates the manual entry usually required for *99#. Instead of typin
 * **Official Gateway:** TurantPay acts as a bridge to the official NPCI gateway; we do not process the money ourselves.
 
 ---
+Removed the main code file to illegal cloning and copying the repo
 ### **📄 License**
 
-This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://www.github.com/rajureddi/TurantPay/License.txt) file for details.
 
 ---
