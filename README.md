@@ -45,6 +45,6 @@ TurantPay automates the manual entry usually required for *99#. Instead of typin
 Removed the main code file to illegal cloning and copying the repo
 ### **📄 License**
 
-This project is licensed under the MIT License - see the [LICENSE](https://www.github.com/rajureddi/TurantPay/License.txt) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/rajureddi/TurantPay/blob/master/License.txt) file for details.
 
 ---
