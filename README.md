@@ -48,4 +48,4 @@ Removed the main code file to illegal cloning and copying the repo
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/rajureddi/TurantPay/blob/master/License.txt) file for details.
 
 ---
-Contact me for any feedback or issues [mail:]rajubandam694@gmail.com
+Contact me for any feedback or issues mail rajubandam694@gmail.com
