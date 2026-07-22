@@ -1,5 +1,5 @@
 
-<meta name="google-site-verification" content="NqzJCffcV5vieJrKYNDJ_prZStmIuT3yTQoFkgM5BAY" />
+
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=rajureddi&label=Repo%20views&color=0e75b6&style=flat" alt="rajureddi" /> </p>
 
