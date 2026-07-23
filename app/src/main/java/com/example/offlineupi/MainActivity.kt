@@ -99,6 +99,11 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
         }
     }
 
+    fun setPendingTransaction(vpa: String, amount: String) {
+        this.currentVpa = vpa
+        this.currentAmount = amount
+    }
+
     fun openPaymentForVpa(vpa: String) {
         currentVpa = vpa
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
