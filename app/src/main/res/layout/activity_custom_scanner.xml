@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/zxing_barcode_scanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:zxing_use_texture_view="true" />
+
+    <TextView
+        android:id="@+id/tvScanInstruction"
+        style="@style/TextAppearance.TurantPay.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:text="Scan any QR code to pay"
+        android:textColor="#FFFFFF" />
+
+    <View
+        android:id="@+id/vScannerFrame"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_scanner_frame" />
+
+    <ImageView
+        android:id="@+id/btnTorch"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="64dp"
+        android:background="@drawable/bg_icon_circle"
+        android:backgroundTint="#4D000000"
+        android:padding="16dp"
+        android:src="@android:drawable/ic_menu_camera"
+        app:tint="#FFFFFF" />
+
+</RelativeLayout>

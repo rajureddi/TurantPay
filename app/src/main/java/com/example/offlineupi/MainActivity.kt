@@ -16,6 +16,14 @@ class MainActivity : AppCompatActivity() {
     private var currentVpa: String = ""
     private var currentAmount: String = ""
 
+    private val barcodeLauncher = registerForActivityResult(com.journeyapps.barcodescanner.ScanContract()) { result ->
+        if (result.contents != null) {
+            handleQrResult(result.contents)
+        } else {
+            Toast.makeText(this, "Scan cancelled", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -44,7 +52,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         fabScan.setOnClickListener {
-            Toast.makeText(this, "Scan & Pay (Coming in Phase 4)", Toast.LENGTH_SHORT).show()
+            val options = com.journeyapps.barcodescanner.ScanOptions()
+            options.setDesiredBarcodeFormats(com.journeyapps.barcodescanner.ScanOptions.QR_CODE)
+            options.setPrompt("")
+            options.setCameraId(0)
+            options.setBeepEnabled(false)
+            options.setBarcodeImageEnabled(true)
+            options.setCaptureActivity(CustomCaptureActivity::class.java)
+            barcodeLauncher.launch(options)
         }
     }
 
