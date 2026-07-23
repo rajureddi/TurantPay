@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        val fabScan = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabScan)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -35,8 +36,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_settings -> SettingsFragment()
                 else -> HomeFragment()
             }
-            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.fragment_container, fragment)
+                .commit()
             true
+        }
+
+        fabScan.setOnClickListener {
+            Toast.makeText(this, "Scan & Pay (Coming in Phase 4)", Toast.LENGTH_SHORT).show()
         }
     }
 
