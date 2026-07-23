@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/outfit_regular</item>
+        <item>@font/outfit_bold</item>
+        <item>@font/outfit_semibold</item>
+        <item>@font/inter_regular</item>
+        <item>@font/inter_medium</item>
+        <item>@font/inter_semibold</item>
+    </array>
+</resources>
