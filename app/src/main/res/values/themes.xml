@@ -1,9 +1,29 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.Offlineupi" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.TurantPay" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="android:colorBackground">@color/bg_light</item>
+        <item name="colorSurface">@color/surface_light</item>
+        <item name="colorOnSurface">@color/text_primary_light</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary_light</item>
+        <item name="android:statusBarColor">@color/primary_variant</item>
+        <item name="android:navigationBarColor">@color/nav_bg_light</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="bottomNavigationStyle">@style/Widget.TurantPay.BottomNav</item>
+        <item name="materialCardViewStyle">@style/Widget.TurantPay.Card</item>
     </style>
 
-    <style name="Theme.Offlineupi" parent="Base.Theme.Offlineupi" />
+    <style name="Theme.TurantPay" parent="Base.Theme.TurantPay" />
+
+    <style name="Theme.TurantPay.Splash" parent="Base.Theme.TurantPay">
+        <item name="android:windowBackground">@color/primary_variant</item>
+        <item name="android:statusBarColor">@color/primary_variant</item>
+    </style>
 </resources>
