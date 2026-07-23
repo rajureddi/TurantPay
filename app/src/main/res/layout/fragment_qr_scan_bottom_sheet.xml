@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="?android:colorBackground">
+
+    <TextView
+        style="@style/TextAppearance.TurantPay.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Merchant / Payee Payment"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvScannedVpa"
+        style="@style/TextAppearance.TurantPay.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="merchant@upi"
+        android:textColor="@color/accent"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.TurantPay.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:cardBackgroundColor="#FFF3E0"
+        app:cardElevation="0dp"
+        app:strokeColor="#FFE0B2"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📋 UPI ID Copied Automatically"
+                android:textColor="#E65100"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Your UPI ID is copied to clipboard. Just PASTE it into the USSD menu on the next screen."
+                android:textColor="#BF360C"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="24dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRecopyUpi"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RE-COPY UPI ID AGAIN"
+            app:strokeColor="@color/accent"
+            android:textColor="@color/accent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStartPaymentUssd"
+            style="@style/Widget.TurantPay.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Next / Start Payment (*99*1*3#)" />
+    </LinearLayout>
+</LinearLayout>

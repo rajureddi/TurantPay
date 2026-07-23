@@ -1,4 +1,4 @@
-package com.example.offlineupi
+package com.turantpay
 
 import android.content.Context
 import android.os.Bundle
@@ -20,6 +20,7 @@ import com.google.android.material.button.MaterialButton
 class PaymentBottomSheetFragment : BottomSheetDialogFragment() {
 
     private var vpa: String? = null
+    private var skipPin = false
     private var currentPin = ""
     private var amountString = ""
     private var listener: PaymentListener? = null
@@ -38,6 +39,7 @@ class PaymentBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vpa = arguments?.getString(ARG_VPA)
+        skipPin = arguments?.getBoolean(ARG_SKIP_PIN, false) ?: false
     }
 
     override fun onCreateView(
@@ -56,7 +58,7 @@ class PaymentBottomSheetFragment : BottomSheetDialogFragment() {
         val viewFlipper = view.findViewById<ViewFlipper>(R.id.viewFlipper)
         
         val layoutPinDots = view.findViewById<LinearLayout>(R.id.layoutPinDots)
-        val layoutKeypad = view.findViewById<androidx.gridlayout.widget.GridLayout>(R.id.layoutKeypad) ?: view.findViewById<android.widget.GridLayout>(R.id.layoutKeypad)
+        val layoutKeypad = view.findViewById<android.widget.GridLayout>(R.id.layoutKeypad)
         val btnStartPayment = view.findViewById<MaterialButton>(R.id.btnStartPayment)
 
         tvPayeeVpa.text = vpa ?: "Unknown VPA"
@@ -69,8 +71,13 @@ class PaymentBottomSheetFragment : BottomSheetDialogFragment() {
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.hideSoftInputFromWindow(etAmount.windowToken, 0)
                 
-                // Flip to PIN state
-                viewFlipper.showNext()
+                if (skipPin) {
+                    listener?.onPaymentConfirmed(amountString, "")
+                    dismiss()
+                } else {
+                    // Flip to PIN state
+                    viewFlipper.showNext()
+                }
             } else {
                 Toast.makeText(context, "Enter a valid amount", Toast.LENGTH_SHORT).show()
             }
@@ -118,12 +125,14 @@ class PaymentBottomSheetFragment : BottomSheetDialogFragment() {
 
     companion object {
         private const val ARG_VPA = "vpa"
+        private const val ARG_SKIP_PIN = "skip_pin"
 
         @JvmStatic
-        fun newInstance(vpa: String) =
+        fun newInstance(vpa: String, skipPin: Boolean = false) =
             PaymentBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_VPA, vpa)
+                    putBoolean(ARG_SKIP_PIN, skipPin)
                 }
             }
     }

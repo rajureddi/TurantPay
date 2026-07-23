@@ -4,17 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.offlineupi"
-    compileSdk {
-        version = release(36)
-    }
+    namespace = "com.turantpay"
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.offlineupi"
+        applicationId = "com.turantpay"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 35
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

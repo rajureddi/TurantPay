@@ -1,4 +1,4 @@
-package com.example.offlineupi
+package com.turantpay
 
 import android.content.Intent
 import android.net.Uri
@@ -15,7 +15,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Developer Link
         view.findViewById<LinearLayout>(R.id.btnDeveloper).setOnClickListener {
-            val developerUrl = "https://github.com/yourusername" // Replace with your actual link
+            val developerUrl = "https://github.com/rajureddi/turantpay" // Replace with your actual link
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(developerUrl))
             startActivity(intent)
         }

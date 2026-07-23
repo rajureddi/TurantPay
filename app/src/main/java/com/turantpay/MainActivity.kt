@@ -1,12 +1,10 @@
-package com.example.offlineupi
+package com.turantpay
 
 import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -45,7 +43,7 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
         checkCallPermission()
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        val fabScan = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabScan)
+        val fabScan = findViewById<android.view.View>(R.id.fabScan)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -108,16 +106,13 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
 
     fun openPaymentForVpa(vpa: String) {
         currentVpa = vpa
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("UPI_ID", currentVpa)
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, "UPI ID Copied: $vpa", Toast.LENGTH_SHORT).show()
-        PaymentBottomSheetFragment.newInstance(currentVpa, isMobilePay = false).show(supportFragmentManager, "PaymentSheet")
+        PaymentBottomSheetFragment.newInstance(currentVpa).show(supportFragmentManager, "PaymentSheet")
     }
 
     fun openPaymentForMobile(phone: String) {
         currentVpa = phone
-        PaymentBottomSheetFragment.newInstance(phone, isMobilePay = true).show(supportFragmentManager, "MobilePaymentSheet")
+        PaymentBottomSheetFragment.newInstance(phone, skipPin = true)
+            .show(supportFragmentManager, "MobilePaymentSheet")
     }
 
     fun onMobilePaymentConfirmed(phone: String, amount: String) {
@@ -149,7 +144,14 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
 
     override fun onPaymentConfirmed(amount: String, pin: String) {
         currentAmount = amount
-        dialUssd("*99*1*3#")
+
+        if (currentVpa.length == 10 && currentVpa.all { it.isDigit() }) {
+            // Mobile payment
+            dialUssd("*99*1*1*${currentVpa}*${amount}*1#")
+        } else {
+            // VPA payment
+            dialUssd("*99*1*3#")
+        }
     }
 
     override fun onResume() {

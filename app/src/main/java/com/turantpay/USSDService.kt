@@ -1,4 +1,4 @@
-package com.example.offlineupi
+package com.turantpay
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent

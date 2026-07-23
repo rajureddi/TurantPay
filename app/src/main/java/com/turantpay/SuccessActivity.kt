@@ -1,11 +1,11 @@
-package com.example.offlineupi
+package com.turantpay
 
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.airbnb.lottie.LottieAnimationView
+import android.widget.ImageView
 import com.google.android.material.button.MaterialButton
 
 class SuccessActivity : AppCompatActivity() {
@@ -20,12 +20,12 @@ class SuccessActivity : AppCompatActivity() {
         val txid = intent.getStringExtra("txid") ?: ("TXN" + System.currentTimeMillis().toString().takeLast(6))
         val time = intent.getStringExtra("time") ?: "Just Now"
 
-        val lottieResult = findViewById<LottieAnimationView>(R.id.lottieResult)
         val tvStatusTitle = findViewById<TextView>(R.id.tvStatusTitle)
         val tvAmount = findViewById<TextView>(R.id.tvAmount)
         val tvPayeeVpa = findViewById<TextView>(R.id.tvPayeeVpa)
         val tvTxId = findViewById<TextView>(R.id.tvTxId)
         val tvTimestamp = findViewById<TextView>(R.id.tvTimestamp)
+        val lottieResult = findViewById<ImageView>(R.id.lottieResult)
         val btnShare = findViewById<MaterialButton>(R.id.btnShare)
         val btnDone = findViewById<MaterialButton>(R.id.btnDone)
 
@@ -38,12 +38,12 @@ class SuccessActivity : AppCompatActivity() {
             tvStatusTitle.text = "Payment Successful"
             tvStatusTitle.setTextColor(Color.parseColor("#2E7D32"))
             btnDone.text = "Done"
-            lottieResult.setAnimation(R.raw.lottie_success)
+            lottieResult.setImageResource(R.drawable.ic_success)
         } else {
             tvStatusTitle.text = "Payment Failed"
             tvStatusTitle.setTextColor(Color.parseColor("#C62828"))
             btnDone.text = "Try Again"
-            lottieResult.setAnimation(R.raw.lottie_success) // Fallback or use cross animation if available
+            lottieResult.setImageResource(R.drawable.ic_failure)
         }
 
         btnShare.setOnClickListener {

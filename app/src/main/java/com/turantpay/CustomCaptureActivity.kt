@@ -1,4 +1,4 @@
-package com.example.offlineupi
+package com.turantpay
 
 import android.os.Bundle
 import android.widget.ImageView

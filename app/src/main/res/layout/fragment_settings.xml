@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA">
+    android:background="?android:colorBackground"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,156 +13,190 @@
         android:padding="20dp">
 
         <TextView
+            style="@style/TextAppearance.TurantPay.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="About"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#000000" />
-
-
+            android:text="About" />
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/TextAppearance.TurantPay.Caption"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="About TurantPay"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginTop="4dp"
+            android:text="Everything you need to know about TurantPay" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            android:layout_marginBottom="24dp">
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/primary"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:padding="20dp">
 
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_icon_circle"
+                    android:backgroundTint="@color/white"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_logo"
+                    app:tint="@color/primary" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TurantPay v1.0.0"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/outfit_bold"
+                        android:text="TurantPay"
+                        android:textColor="@color/white"
+                        android:textSize="24sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Instant. Offline. Secure."
-                        android:textSize="12sp"
-                        android:textColor="#757575" />
+                        android:layout_marginTop="4dp"
+                        android:text="Offline UPI, made simple"
+                        android:textColor="#DDEBFF"
+                        android:textSize="14sp" />
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Important Information"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            android:layout_marginBottom="24dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/security_notice_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🛡 Security Notice"
-                    android:textStyle="bold"
-                    android:textColor="#1A73E8"
-                    android:layout_marginBottom="8dp"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="This app provides quick access to USSD banking codes. Due to Android security restrictions, USSD responses cannot be captured programmatically. All responses will appear in the system's native USSD dialog."
-                    android:textSize="13sp"
-                    android:textColor="#444444" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="USSD Information"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="24dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="*99# is India's unified payment interface (UPI) code for feature phones and basic mobiles. It works without internet and is available on all mobile networks."
-                    android:textSize="14sp"
-                    android:textColor="#444444"
-                    android:layout_marginBottom="12dp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#EEEEEE"
-                    android:layout_marginBottom="12dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Features:"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="✓ No internet required\n✓ Works on any mobile network\n✓ Completely free to use\n✓ Secure banking transactions\n✓ Available 24/7"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp" />
+                    android:background="#2D78C8"
+                    android:fontFamily="@font/outfit_semibold"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="6dp"
+                    android:text="v1.1"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            style="@style/TextAppearance.TurantPay.Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Support"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginTop="28dp"
+            android:text="How it works" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="#EEF6FF"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#C9E0FF"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfit_semibold"
+                    android:text="Your bank stays in control"
+                    android:textColor="@color/primary_variant"
+                    android:textSize="17sp" />
+
+                <TextView
+                    style="@style/TextAppearance.TurantPay.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="TurantPay opens your phoneâ€™s official USSD payment flow. Android shows every bank response in its own secure USSD dialog, so the app cannot read or store it." />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            style="@style/TextAppearance.TurantPay.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="USSD service" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.TurantPay.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E3E8EF"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfit_semibold"
+                    android:text="Powered by *99#"
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="17sp" />
+
+                <TextView
+                    style="@style/TextAppearance.TurantPay.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Indiaâ€™s USSD payment service works without mobile data through your SIM network." />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="#FFF1E6"
+                    android:fontFamily="@font/outfit_semibold"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="7dp"
+                    android:text="NO INTERNET REQUIRED"
+                    android:textColor="@color/accent"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            style="@style/TextAppearance.TurantPay.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Support &amp; developer" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.TurantPay.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E3E8EF"
+            app:strokeWidth="1dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -170,36 +205,73 @@
                 <LinearLayout
                     android:id="@+id/btnHelpline"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/outfit_semibold"
+                        android:text="NPCI Helpline"
+                        android:textSize="16sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📞 NPCI Helpline: 1800-120-1740" />
+                        android:text="1800-120-1740"
+                        android:textColor="@color/primary"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#EEEEEE" />
+                    android:background="#E9EDF2" />
 
                 <LinearLayout
                     android:id="@+id/btnDeveloper"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    android:background="?attr/selectableItemBackground">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/outfit_semibold"
+                            android:text="Developer"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            style="@style/TextAppearance.TurantPay.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="github.com/rajureddi/turantpay" />
+                    </LinearLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="💻 App Developer-RAJUReDDY" />
+                        android:text="Open"
+                        android:textColor="@color/accent"
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

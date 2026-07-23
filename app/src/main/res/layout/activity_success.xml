@@ -12,14 +12,13 @@
         android:gravity="center_horizontal"
         android:padding="24dp">
 
-        <com.airbnb.lottie.LottieAnimationView
+        <ImageView
             android:id="@+id/lottieResult"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_marginTop="24dp"
-            app:lottie_rawRes="@raw/lottie_success"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="false" />
+            android:src="@drawable/ic_success"
+            android:padding="24dp" />
 
         <TextView
             android:id="@+id/tvStatusTitle"

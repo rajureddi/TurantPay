@@ -1,4 +1,4 @@
-package com.example.offlineupi
+package com.turantpay
 
 import android.view.LayoutInflater
 import android.view.View

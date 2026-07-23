@@ -1,4 +1,4 @@
-package com.example.offlineupi
+package com.turantpay
 
 import android.content.Context
 import android.os.Bundle
@@ -27,8 +27,8 @@ class HistoryActivity : AppCompatActivity() {
                 val text2 = view.findViewById<TextView>(android.R.id.text2)
 
                 val parts = entries[position].split("|") // Format: Time|VPA|Amount|ID
-                text1.text = "₹${parts[2]} Paid to ${parts[1]}"
-                text2.text = "${parts[0]} • ID: ${parts[3]}"
+                text1.text = "â‚¹${parts[2]} Paid to ${parts[1]}"
+                text2.text = "${parts[0]} â€¢ ID: ${parts[3]}"
 
                 // Tap and Hold to Delete
                 view.setOnLongClickListener {

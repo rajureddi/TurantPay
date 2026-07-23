@@ -20,6 +20,8 @@
     </style>
 
     <!-- Button Styles -->
+    <style name="Widget.TurantPay.Button" parent="Widget.TurantPay.Button.Primary" />
+
     <style name="Widget.TurantPay.Button.Primary" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/accent</item>
         <item name="android:textColor">@color/white</item>
