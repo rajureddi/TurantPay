@@ -3,11 +3,11 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // PWA Service Worker Registration with Cache Busting v10.0
+  // PWA Service Worker Registration with Cache Busting v11.0
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?v=10.0')
+    navigator.serviceWorker.register('./sw.js?v=11.0')
       .then(reg => {
-        console.log('[TurantPay PWA] Service Worker v10.0 Registered', reg);
+        console.log('[TurantPay PWA] Service Worker v11.0 Registered', reg);
         reg.update();
       })
       .catch(err => console.error('[TurantPay PWA] SW Registration Failed', err));
@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // State Management
   let deferredPrompt = null;
   let html5QrcodeScanner = null;
+  let currentFacingMode = "environment";
   let scannedVpa = '';
 
   // DOM Elements
@@ -25,19 +26,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnInstallSettings = document.getElementById('btnInstallSettings');
   const btnConfirmPopupInstall = document.getElementById('btnConfirmPopupInstall');
   const btnDismissInstallPopup = document.getElementById('btnDismissInstallPopup');
+  const btnHeaderDownload = document.getElementById('btnHeaderDownload');
   
-  // Modals & Bottom Sheets
+  // Modals & Full Page Views
   const mobileModal = document.getElementById('mobileModal');
-  const qrModal = document.getElementById('qrModal');
-  const qrResultModal = document.getElementById('qrResultModal');
+  const qrModal = document.getElementById('qrModal'); // Full page scanner
+  const fullPageResultScreen = document.getElementById('fullPageResultScreen'); // Full page result screen
   const settingsModal = document.getElementById('settingsModal');
   const installPromptModal = document.getElementById('installPromptModal');
+  const iosHelpModal = document.getElementById('iosHelpModal');
   const toast = document.getElementById('toast');
 
-  // Input Fields
-  const inputMobile = document.getElementById('inputMobile');
-  const inputAmount = document.getElementById('inputAmount');
+  // Hidden File Input
+  const qrFileInput = document.getElementById('qrFileInput');
+
+  // Scanner UI Buttons
+  const btnCloseScanner = document.getElementById('btnCloseScanner');
+  const btnTopUpload = document.getElementById('btnTopUpload');
+  const btnGalleryUpload = document.getElementById('btnGalleryUpload');
+  const btnToggleCamera = document.getElementById('btnToggleCamera');
+
+  // Result UI Elements
+  const btnBackFromResult = document.getElementById('btnBackFromResult');
   const scannedVpaText = document.getElementById('scannedVpaText');
+  const btnCopyVpa = document.getElementById('btnCopyVpa');
+  const resultInputAmount = document.getElementById('resultInputAmount');
+  const resultInputNote = document.getElementById('resultInputNote');
+  const btnResultSendMoney = document.getElementById('btnResultSendMoney');
+  const btnResultScanAnother = document.getElementById('btnResultScanAnother');
 
   // Action Buttons & Nav items
   const btnSendMobile = document.getElementById('btnSendMobile');
@@ -45,10 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnStartScan = document.getElementById('btnStartScan');
   const fabScan = document.getElementById('fabScan');
   const btnConfirmMobilePay = document.getElementById('btnConfirmMobilePay');
-  const btnDialVpaUssd = document.getElementById('btnDialVpaUssd');
-  const btnRecopyUpi = document.getElementById('btnRecopyUpi');
   const btnNavHome = document.getElementById('btnNavHome');
   const btnNavSettings = document.getElementById('btnNavSettings');
+  const btnGotIosHelp = document.getElementById('btnGotIosHelp');
 
   // Check standalone mode
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -82,6 +97,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 600);
   }
 
+  // Header Download / iOS Help Trigger
+  if (btnHeaderDownload) {
+    btnHeaderDownload.addEventListener('click', () => {
+      if (deferredPrompt) {
+        triggerPwaInstall();
+      } else {
+        openModal(iosHelpModal);
+      }
+    });
+  }
+
   // Trigger PWA installation prompt or step-by-step fallback
   function triggerPwaInstall() {
     if (deferredPrompt) {
@@ -96,11 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         deferredPrompt = null;
       });
     } else {
-      showToast("To Install: Tap browser Share/Menu → select 'Add to Home Screen'");
-      setTimeout(() => {
-        alert("📲 To Install TurantPay Web App:\n\n1. Tap your browser menu or Share button (iOS/Android)\n2. Select 'Add to Home Screen'\n3. TurantPay will install as an offline app!");
-      }, 300);
-      closeModal(installPromptModal);
+      openModal(iosHelpModal);
     }
   }
 
@@ -111,6 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnDismissInstallPopup) {
     btnDismissInstallPopup.addEventListener('click', () => {
       closeModal(installPromptModal);
+    });
+  }
+
+  if (btnGotIosHelp) {
+    btnGotIosHelp.addEventListener('click', () => {
+      closeModal(iosHelpModal);
     });
   }
 
@@ -146,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }, 300);
     }
-    if (modal === qrModal && html5QrcodeScanner) {
+    if (modal === qrModal) {
       stopScanner();
     }
     if (modal === settingsModal) {
@@ -215,14 +243,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Feature 3: FAST Scan & Pay QR Flow (*99*1*3# + auto copy VPA)
+  // Feature 3: FULL PAGE QR CAMERA SCANNER UI & GALLERY DECODER
   function startScanner() {
+    if (fullPageResultScreen) {
+      fullPageResultScreen.classList.remove('active');
+      fullPageResultScreen.style.display = 'none';
+    }
+
     openModal(qrModal);
+
     if (!html5QrcodeScanner) {
       html5QrcodeScanner = new Html5Qrcode("reader");
     }
 
-    // Optimized configuration for fast scanning across the entire camera view
     const config = { 
       fps: 25, 
       qrbox: (viewfinderWidth, viewfinderHeight) => {
@@ -236,63 +269,102 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const onScanSuccess = (decodedText) => {
-      // 1. Instantly process result and open result sheet
       handleQrResult(decodedText);
-      // 2. Hide scan modal immediately
-      if (qrModal) {
-        qrModal.classList.remove('active');
-        qrModal.style.display = 'none';
-      }
-      // 3. Stop camera background task safely
-      if (html5QrcodeScanner) {
-        html5QrcodeScanner.stop().catch(err => console.log("Scanner stop notice:", err));
-      }
+      closeModal(qrModal);
+      stopScanner();
     };
-    
+
     html5QrcodeScanner.start(
-      { facingMode: "environment" },
+      { facingMode: currentFacingMode },
       config,
       onScanSuccess,
       () => {}
     ).catch(err => {
-      console.warn("Camera environment failed, trying default camera:", err);
-      // Fallback try default camera
-      html5QrcodeScanner.start(
-        { facingMode: "user" },
-        config,
-        onScanSuccess,
-        () => {}
-      ).catch(e => {
-        showToast("Camera access error. Please allow camera permissions.");
-      });
+      console.warn("Camera start warning:", err);
     });
   }
 
   function stopScanner() {
     if (html5QrcodeScanner) {
-      html5QrcodeScanner.stop().then(() => {
-        console.log("Scanner stopped");
-      }).catch(err => console.log("Stop scanner err:", err));
+      html5QrcodeScanner.stop().catch(err => {});
     }
   }
 
+  // Scanner UI Buttons
+  if (btnCloseScanner) {
+    btnCloseScanner.addEventListener('click', () => {
+      closeModal(qrModal);
+    });
+  }
+
+  // Gallery Upload Handlers
+  if (btnTopUpload) btnTopUpload.addEventListener('click', () => qrFileInput.click());
+  if (btnGalleryUpload) btnGalleryUpload.addEventListener('click', () => qrFileInput.click());
+
+  if (qrFileInput) {
+    qrFileInput.addEventListener('change', (e) => {
+      if (e.target.files.length === 0) return;
+      const imageFile = e.target.files[0];
+      
+      showToast("Processing QR Image from Gallery...");
+
+      if (!html5QrcodeScanner) {
+        html5QrcodeScanner = new Html5Qrcode("reader");
+      }
+
+      html5QrcodeScanner.scanFile(imageFile, true)
+        .then((decodedText) => {
+          closeModal(qrModal);
+          handleQrResult(decodedText);
+        })
+        .catch((err) => {
+          console.error("Gallery QR Error:", err);
+          showToast("No valid UPI QR code found in selected image.");
+        });
+    });
+  }
+
+  // Toggle Camera Facing Mode
+  if (btnToggleCamera) {
+    btnToggleCamera.addEventListener('click', () => {
+      currentFacingMode = (currentFacingMode === "environment") ? "user" : "environment";
+      stopScanner();
+      setTimeout(startScanner, 300);
+    });
+  }
+
+  // ==========================================================================
+  // FULL PAGE EXTRACTED RESULT SCREEN LOGIC
+  // ==========================================================================
   function handleQrResult(qrData) {
     let cleanData = decodeURIComponent(qrData);
+    let extractedAmount = "";
+    let extractedNote = "";
+
     if (cleanData.includes("pa=")) {
       scannedVpa = cleanData.substring(cleanData.indexOf("pa=") + 3).split("&")[0];
     } else if (cleanData.toLowerCase().startsWith("upi://pay")) {
       const urlParams = new URLSearchParams(cleanData.substring(cleanData.indexOf("?")));
       scannedVpa = urlParams.get("pa") || cleanData;
+      extractedAmount = urlParams.get("am") || "";
+      extractedNote = urlParams.get("tn") || "";
     } else {
       scannedVpa = cleanData;
     }
 
-    // Auto Copy to Clipboard
+    // Auto Copy VPA to Clipboard
     copyToClipboard(scannedVpa);
-    
-    // Display result sheet
+
+    // Fill Full Page Result Fields
     if (scannedVpaText) scannedVpaText.innerText = scannedVpa;
-    openModal(qrResultModal);
+    if (resultInputAmount) resultInputAmount.value = extractedAmount;
+    if (resultInputNote) resultInputNote.value = extractedNote;
+
+    // Show Full Page Result View
+    if (fullPageResultScreen) {
+      fullPageResultScreen.style.display = 'flex';
+      setTimeout(() => fullPageResultScreen.classList.add('active'), 10);
+    }
     showToast("UPI ID Copied to Clipboard!");
   }
 
@@ -309,21 +381,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (btnStartScan) btnStartScan.addEventListener('click', startScanner);
-  if (fabScan) fabScan.addEventListener('click', startScanner);
-
-  if (btnRecopyUpi) {
-    btnRecopyUpi.addEventListener('click', () => {
+  if (btnCopyVpa) {
+    btnCopyVpa.addEventListener('click', () => {
       copyToClipboard(scannedVpa);
       showToast("UPI ID re-copied to clipboard!");
     });
   }
 
-  if (btnDialVpaUssd) {
-    btnDialVpaUssd.addEventListener('click', () => {
-      closeModal(qrResultModal);
-      showToast("Opening Dialer with USSD: *99*1*3#");
+  if (btnBackFromResult) {
+    btnBackFromResult.addEventListener('click', () => {
+      if (fullPageResultScreen) {
+        fullPageResultScreen.classList.remove('active');
+        setTimeout(() => fullPageResultScreen.style.display = 'none', 300);
+      }
+    });
+  }
+
+  if (btnResultScanAnother) {
+    btnResultScanAnother.addEventListener('click', () => {
+      if (fullPageResultScreen) {
+        fullPageResultScreen.classList.remove('active');
+        setTimeout(() => fullPageResultScreen.style.display = 'none', 300);
+      }
+      setTimeout(startScanner, 350);
+    });
+  }
+
+  if (btnResultSendMoney) {
+    btnResultSendMoney.addEventListener('click', () => {
+      showToast("Opening Phone Dialer with USSD: *99*1*3#");
       setTimeout(() => dialUssd("*99*1*3#"), 400);
     });
   }
+
+  if (btnStartScan) btnStartScan.addEventListener('click', startScanner);
+  if (fabScan) fabScan.addEventListener('click', startScanner);
 });
