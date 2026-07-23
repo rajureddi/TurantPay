@@ -171,11 +171,72 @@
             </LinearLayout>
         </GridLayout>
 
-        <!-- Placeholder for Recent Payees (Plan 3.3) -->
-        <FrameLayout
-            android:id="@+id/recentPayeesContainer"
+        <!-- Recent Payees Section -->
+        <TextView
+            style="@style/TextAppearance.TurantPay.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Recent Payees" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRecentPayees"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:clipToPadding="false" />
+
+        <!-- Important Notes Expandable Card -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.TurantPay.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutNotesHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        style="@style/TextAppearance.TurantPay.Title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Important Notes" />
+
+                    <ImageView
+                        android:id="@+id/ivNotesToggle"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_more"
+                        android:rotation="90"
+                        app:tint="?android:textColorPrimary" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvNotesBody"
+                    style="@style/TextAppearance.TurantPay.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="• Max transaction limit is ₹5,000.\n• Standard SMS charges may apply.\n• Requires registered mobile number.\n• No internet connection needed."
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>
