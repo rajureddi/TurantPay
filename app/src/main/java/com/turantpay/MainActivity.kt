@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
         setContentView(R.layout.activity_main)
 
         checkCallPermission()
-        checkForAppUpdates()
+        checkForAppUpdates(isManualCheck = false)
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val fabScan = findViewById<android.view.View>(R.id.fabScan)
@@ -81,37 +81,58 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
         }
     }
 
-    fun checkForAppUpdates() {
+    fun checkForAppUpdates(isManualCheck: Boolean = false) {
+        if (isManualCheck) {
+            Toast.makeText(this, "Checking for updates...", Toast.LENGTH_SHORT).show()
+        }
+
         Thread {
             try {
                 val url = URL("https://api.github.com/repos/rajureddi/TurantPay/releases/latest")
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.setRequestProperty("Accept", "application/vnd.github.v3+json")
-                connection.connectTimeout = 4000
-                connection.readTimeout = 4000
+                connection.connectTimeout = 5000
+                connection.readTimeout = 5000
 
                 if (connection.responseCode == 200) {
                     val responseText = connection.inputStream.bufferedReader().use { it.readText() }
                     val jsonObject = JSONObject(responseText)
-                    val latestTag = jsonObject.optString("tag_name", "").replace("v", "").trim()
+                    val latestTagRaw = jsonObject.optString("tag_name", "").trim()
+                    val latestTag = latestTagRaw.replace("v", "").trim()
                     val downloadUrl = jsonObject.optString("html_url", "https://github.com/rajureddi/TurantPay/releases/latest")
 
                     val currentVersion = try {
                         val pInfo = packageManager.getPackageInfo(packageName, 0)
-                        pInfo.versionName?.replace("v", "")?.trim() ?: "1.0.0"
+                        pInfo.versionName?.replace("v", "")?.trim() ?: "1.1.0"
                     } catch (e: Exception) {
-                        "1.0.0"
+                        "1.1.0"
                     }
 
                     if (isVersionNewer(latestTag, currentVersion)) {
                         runOnUiThread {
-                            showUpdateAvailableDialog(latestTag, downloadUrl)
+                            showUpdateAvailableDialog(if (latestTagRaw.isNotEmpty()) latestTagRaw else "v$latestTag", downloadUrl)
                         }
+                    } else if (isManualCheck) {
+                        runOnUiThread {
+                            AlertDialog.Builder(this)
+                                .setTitle("App is Up to Date ✓")
+                                .setMessage("You are using the latest version of TurantPay (v$currentVersion).")
+                                .setPositiveButton("OK", null)
+                                .show()
+                        }
+                    }
+                } else if (isManualCheck) {
+                    runOnUiThread {
+                        Toast.makeText(this, "No releases found on GitHub.", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
-                // Silently ignore if offline or request fails
+                if (isManualCheck) {
+                    runOnUiThread {
+                        Toast.makeText(this, "Unable to check for updates. Please check internet connection.", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         }.start()
     }
@@ -136,7 +157,7 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
     private fun showUpdateAvailableDialog(latestVersion: String, downloadUrl: String) {
         AlertDialog.Builder(this)
             .setTitle("App Update Available 🚀")
-            .setMessage("A new version (v$latestVersion) of TurantPay is available on GitHub. Would you like to download the update?")
+            .setMessage("A new version ($latestVersion) of TurantPay is available. Would you like to download the update?")
             .setPositiveButton("Download") { _, _ ->
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
                 startActivity(intent)

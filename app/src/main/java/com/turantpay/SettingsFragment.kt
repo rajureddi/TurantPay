@@ -12,9 +12,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Check for Updates
+        // Check for Updates (Manual Trigger)
         view.findViewById<LinearLayout>(R.id.btnCheckUpdates).setOnClickListener {
-            (activity as? MainActivity)?.checkForAppUpdates()
+            (activity as? MainActivity)?.checkForAppUpdates(isManualCheck = true)
         }
 
         // Developer Link
