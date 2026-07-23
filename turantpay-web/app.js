@@ -3,11 +3,11 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // PWA Service Worker Registration with Cache Busting v11.0
+  // PWA Service Worker Registration with Cache Busting v12.0
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?v=11.0')
+    navigator.serviceWorker.register('./sw.js?v=12.0')
       .then(reg => {
-        console.log('[TurantPay PWA] Service Worker v11.0 Registered', reg);
+        console.log('[TurantPay PWA] Service Worker v12.0 Registered', reg);
         reg.update();
       })
       .catch(err => console.error('[TurantPay PWA] SW Registration Failed', err));
