@@ -1,6 +1,6 @@
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=rajureddi&label=Repo%20views&color=0e75b6&style=flat" alt="rajureddi" /> </p>
 
-<h1 align="center">UPI payments. Without the internet.</h1>
+<h1 align="center">TurantPay: App for Offline UPI Payments</h1>
 
 <p align="center">
   Send money. Check your balance. Scan QR codes.<br>
@@ -16,12 +16,12 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/rajureddi/TurantPay">Website</a> · <a href="https://turantpay-web.vercel.app/">PWA</a> · <a href="https://github.com/rajureddi/TurantPay/releases/download/v1.1.0/TurantPay.apk">Download APK</a>
+   <a href="https://turantpay-web.vercel.app/">PWA</a> · <a href="https://github.com/rajureddi/TurantPay/releases/download/v1.1.0/TurantPay.apk">Download APK</a>
 </p>
 
 ---
 
-## **TurantPay: App for Offline UPI Payments**
+
 
 **TurantPay** is a modern Android utility designed to bridge the gap between digital payments and offline accessibility. It provides a professional Graphical User Interface (GUI) over the official *99# USSD framework provided by NPCI, making offline banking as easy as a smartphone app.
 
