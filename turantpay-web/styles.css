@@ -57,6 +57,12 @@
   user-select: none;
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: var(--font-main);
   background-color: #02040A;
@@ -68,7 +74,6 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 /* Container Frame */
@@ -103,6 +108,7 @@ body {
   background: rgba(7, 11, 20, 0.85);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
   z-index: 10;
 }
 
@@ -189,6 +195,7 @@ body {
   align-items: center;
   justify-content: space-between;
   color: #FFFFFF;
+  flex-shrink: 0;
 }
 
 .pwa-banner-text h4 {
@@ -215,8 +222,9 @@ body {
 /* Content Body */
 .app-content {
   flex: 1;
-  padding: 22px 20px;
+  padding: 22px 20px 30px 20px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -350,7 +358,7 @@ body {
   flex-direction: column;
   gap: 14px;
   cursor: pointer;
-  transition: all 0.25 ease;
+  transition: all 0.25s ease;
   backdrop-filter: blur(10px);
 }
 
@@ -414,6 +422,7 @@ body {
   align-items: center;
   justify-content: space-around;
   position: relative;
+  flex-shrink: 0;
   z-index: 10;
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -472,7 +481,7 @@ body {
   height: 100%;
   background: rgba(2, 4, 10, 0.88);
   backdrop-filter: blur(12px);
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: flex-end;
   z-index: 1000;
@@ -482,6 +491,7 @@ body {
 }
 
 .modal-overlay.active {
+  display: flex !important;
   opacity: 1;
   pointer-events: auto;
 }
@@ -598,7 +608,7 @@ body {
   height: 100%;
   background: #000000;
   z-index: 2000;
-  display: flex;
+  display: none;
   flex-direction: column;
   opacity: 0;
   pointer-events: none;
@@ -606,6 +616,7 @@ body {
 }
 
 .full-page-scanner.active {
+  display: flex !important;
   opacity: 1;
   pointer-events: auto;
 }
@@ -711,7 +722,7 @@ body {
 }
 
 /* ==========================================================================
-   Full Page Extracted Result Screen UI (VIBRANT FINTECH)
+   Full Page Extracted Result Screen UI
    ========================================================================== */
 .full-page-result {
   position: absolute;
@@ -721,7 +732,7 @@ body {
   height: 100%;
   background: var(--bg-app);
   z-index: 3000;
-  display: flex;
+  display: none;
   flex-direction: column;
   opacity: 0;
   pointer-events: none;
@@ -731,6 +742,7 @@ body {
 }
 
 .full-page-result.active {
+  display: flex !important;
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
