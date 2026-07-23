@@ -1,50 +1,72 @@
 package com.example.offlineupi
 
+import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
-import android.view.Gravity
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.button.MaterialButton
 
 class SuccessActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_success)
 
-        val layout = LinearLayout(this)
-        layout.orientation = LinearLayout.VERTICAL
-        layout.gravity = Gravity.CENTER
-        layout.setPadding(40, 40, 40, 40)
-        layout.setBackgroundColor(Color.parseColor("#F5F5F5"))
+        val isSuccess = intent.getBooleanExtra("is_success", true)
+        val amount = intent.getStringExtra("amount") ?: "0.00"
+        val vpa = intent.getStringExtra("vpa") ?: "Unknown"
+        val txid = intent.getStringExtra("txid") ?: ("TXN" + System.currentTimeMillis().toString().takeLast(6))
+        val time = intent.getStringExtra("time") ?: "Just Now"
 
-        val tick = TextView(this)
-        tick.text = "✓"
-        tick.textSize = 100f
-        tick.setTextColor(Color.parseColor("#2E7D32")) // Success Green
+        val lottieResult = findViewById<LottieAnimationView>(R.id.lottieResult)
+        val tvStatusTitle = findViewById<TextView>(R.id.tvStatusTitle)
+        val tvAmount = findViewById<TextView>(R.id.tvAmount)
+        val tvPayeeVpa = findViewById<TextView>(R.id.tvPayeeVpa)
+        val tvTxId = findViewById<TextView>(R.id.tvTxId)
+        val tvTimestamp = findViewById<TextView>(R.id.tvTimestamp)
+        val btnShare = findViewById<MaterialButton>(R.id.btnShare)
+        val btnDone = findViewById<MaterialButton>(R.id.btnDone)
 
-        val status = TextView(this)
-        status.text = "Payment Successful"
-        status.textSize = 24f
-        status.setTypeface(null, Typeface.BOLD)
-        status.setTextColor(Color.BLACK)
+        tvAmount.text = "₹$amount"
+        tvPayeeVpa.text = vpa
+        tvTxId.text = txid
+        tvTimestamp.text = time
 
-        val amt = TextView(this)
-        amt.text = "₹${intent.getStringExtra("amount")}"
-        amt.textSize = 48f
-        amt.setPadding(0, 40, 0, 10)
-        amt.setTextColor(Color.BLACK)
+        if (isSuccess) {
+            tvStatusTitle.text = "Payment Successful"
+            tvStatusTitle.setTextColor(Color.parseColor("#2E7D32"))
+            btnDone.text = "Done"
+            lottieResult.setAnimation(R.raw.lottie_success)
+        } else {
+            tvStatusTitle.text = "Payment Failed"
+            tvStatusTitle.setTextColor(Color.parseColor("#C62828"))
+            btnDone.text = "Try Again"
+            lottieResult.setAnimation(R.raw.lottie_success) // Fallback or use cross animation if available
+        }
 
-        val details = TextView(this)
-        details.text = "To: ${intent.getStringExtra("vpa")}\n\nID: ${intent.getStringExtra("txid")}\n${intent.getStringExtra("time")}"
-        details.gravity = Gravity.CENTER
-        details.setPadding(0, 20, 0, 0)
+        btnShare.setOnClickListener {
+            val shareText = """
+                --- TurantPay Receipt ---
+                Status: ${if (isSuccess) "Successful" else "Failed"}
+                Amount: ₹$amount
+                To: $vpa
+                Transaction ID: $txid
+                Date: $time
+                Payment Method: Offline USSD *99#
+            """.trimIndent()
 
-        layout.addView(tick)
-        layout.addView(status)
-        layout.addView(amt)
-        layout.addView(details)
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, shareText)
+                type = "text/plain"
+            }
+            startActivity(Intent.createChooser(sendIntent, "Share Receipt Via"))
+        }
 
-        setContentView(layout)
+        btnDone.setOnClickListener {
+            finish()
+        }
     }
 }
