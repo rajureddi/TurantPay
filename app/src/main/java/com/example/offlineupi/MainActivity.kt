@@ -1,13 +1,15 @@
 package com.example.offlineupi
 
+import android.Manifest
 import android.content.*
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.text.InputType
-import android.view.Gravity
-import android.widget.*
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -15,6 +17,16 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
 
     private var currentVpa: String = ""
     private var currentAmount: String = ""
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(this, "Call permission granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Call permission denied. Dialing via Phone App.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private val barcodeLauncher = registerForActivityResult(com.journeyapps.barcodescanner.ScanContract()) { result ->
         if (result.contents != null) {
@@ -27,6 +39,8 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        checkCallPermission()
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val fabScan = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.fabScan)
@@ -63,71 +77,73 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
         }
     }
 
-    // Function called by HomeFragment after QR Scan (or by barcodeLauncher)
-    fun handleQrResult(scannedData: String) {
-        currentVpa = if (scannedData.contains("pa=")) {
-            scannedData.substringAfter("pa=").substringBefore("&")
-        } else {
-            scannedData // Fallback if not a standard UPI URI
+    private fun checkCallPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(Manifest.permission.CALL_PHONE)
         }
+    }
 
-        // 1. AUTOMATIC COPY TO CLIPBOARD
+    fun dialUssd(code: String) {
+        val encodedCode = Uri.encode(code)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$encodedCode"))
+                startActivity(intent)
+            } catch (e: Exception) {
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$encodedCode"))
+                startActivity(intent)
+            }
+        } else {
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$encodedCode"))
+            startActivity(intent)
+        }
+    }
+
+    fun openPaymentForVpa(vpa: String) {
+        currentVpa = vpa
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("UPI_ID", currentVpa)
         clipboard.setPrimaryClip(clip)
-
-        // Notify the user it was copied automatically
-        Toast.makeText(this, "UPI ID Copied Automatically", Toast.LENGTH_SHORT).show()
-
+        Toast.makeText(this, "UPI ID Copied: $vpa", Toast.LENGTH_SHORT).show()
         PaymentBottomSheetFragment.newInstance(currentVpa).show(supportFragmentManager, "PaymentSheet")
+    }
+
+    // Function called after QR Scan (or by barcodeLauncher)
+    fun handleQrResult(scannedData: String) {
+        val extractedVpa = if (scannedData.contains("pa=")) {
+            scannedData.substringAfter("pa=").substringBefore("&")
+        } else {
+            scannedData
+        }
+        openPaymentForVpa(extractedVpa)
     }
 
     override fun onPaymentConfirmed(amount: String, pin: String) {
         currentAmount = amount
-        // Simulate USSD Call with the given details
-        val ussdCode = "*99*1*3#"
-        val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:${Uri.encode(ussdCode)}"))
+        val txId = "TXN" + System.currentTimeMillis().toString().takeLast(6)
+        val timeStamp = java.text.SimpleDateFormat("dd MMM, hh:mm a", java.util.Locale.getDefault()).format(java.util.Date())
+
+        // Save transaction to history
+        val prefs = getSharedPreferences("OfflineUPIPrefs", Context.MODE_PRIVATE)
+        val existingHistory = prefs.getString("history", "") ?: ""
+        val newEntry = "$timeStamp|$currentVpa|$currentAmount|$txId"
+        prefs.edit().putString("history", "$newEntry;$existingHistory").apply()
+
+        // Dial USSD Code
+        dialUssd("*99*1*3#")
+
+        // Launch Result/Success Activity
+        val intent = Intent(this, SuccessActivity::class.java).apply {
+            putExtra("is_success", true)
+            putExtra("amount", amount)
+            putExtra("vpa", currentVpa)
+            putExtra("txid", txId)
+            putExtra("time", timeStamp)
+        }
         startActivity(intent)
     }
 
     override fun onResume() {
         super.onResume()
-        if (currentVpa.isNotEmpty() && currentAmount.isNotEmpty()) {
-            showCompletionDialog()
-        }
-    }
-
-    private fun showCompletionDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Confirm Payment")
-            .setMessage("Did the bank confirm the transaction for ₹$currentAmount?")
-            .setCancelable(false)
-            .setPositiveButton("Yes, Save to History") { _, _ ->
-                saveTransactionToHistory()
-                currentVpa = ""
-                currentAmount = ""
-            }
-            .setNegativeButton("No / Failed") { _, _ ->
-                currentVpa = ""
-                currentAmount = ""
-            }
-            .show()
-    }
-
-    fun setPendingTransaction(vpa: String, amount: String) {
-        this.currentVpa = vpa
-        this.currentAmount = amount
-    }
-
-    private fun saveTransactionToHistory() {
-        val timeStamp = java.text.SimpleDateFormat("dd MMM, hh:mm a", java.util.Locale.getDefault()).format(java.util.Date())
-        val txId = "TXN" + System.currentTimeMillis().toString().takeLast(6)
-
-        val prefs = getSharedPreferences("OfflineUPIPrefs", Context.MODE_PRIVATE)
-        val existingHistory = prefs.getString("history", "") ?: ""
-        val newEntry = "$timeStamp|$currentVpa|$currentAmount|$txId"
-
-        prefs.edit().putString("history", "$newEntry;$existingHistory").apply()
-        Toast.makeText(this, "Receipt Saved in History", Toast.LENGTH_SHORT).show()
     }
 }

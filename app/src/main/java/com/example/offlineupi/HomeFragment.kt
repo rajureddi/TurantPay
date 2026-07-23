@@ -42,23 +42,35 @@ class HomeFragment : Fragment() {
 
         // Quick action click listeners
         view.findViewById<LinearLayout>(R.id.btnSendMobile).setOnClickListener {
-            Toast.makeText(context, "Send to Mobile tapped", Toast.LENGTH_SHORT).show()
+            showSingleInputDialog("Send to Mobile", "Enter 10-digit Mobile Number") { input ->
+                (activity as? MainActivity)?.openPaymentForVpa(input)
+            }
         }
         view.findViewById<LinearLayout>(R.id.btnSendBank).setOnClickListener {
-            Toast.makeText(context, "Send to Bank tapped", Toast.LENGTH_SHORT).show()
+            showSingleInputDialog("Send to Bank", "Enter Payee UPI ID (e.g. name@upi)") { input ->
+                (activity as? MainActivity)?.openPaymentForVpa(input)
+            }
         }
         view.findViewById<LinearLayout>(R.id.btnCheckBalance).setOnClickListener {
-            Toast.makeText(context, "Check Balance tapped", Toast.LENGTH_SHORT).show()
+            (activity as? MainActivity)?.dialUssd("*99*3#")
         }
         view.findViewById<LinearLayout>(R.id.btnMiniStatement).setOnClickListener {
-            Toast.makeText(context, "Mini Statement tapped", Toast.LENGTH_SHORT).show()
+            (activity as? MainActivity)?.dialUssd("*99*7#")
         }
 
         // Recent Payees setup
         val rvRecentPayees = view.findViewById<RecyclerView>(R.id.rvRecentPayees)
         rvRecentPayees.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        val dummyPayees = listOf("Amit", "Rahul", "Priya", "Sunil", "Neha")
-        rvRecentPayees.adapter = RecentPayeesAdapter(dummyPayees)
+        val dummyPayees = listOf(
+            "Amit" to "9876543210@upi",
+            "Rahul" to "rahul@upi",
+            "Priya" to "priya@okicici",
+            "Sunil" to "sunil@ybl",
+            "Neha" to "neha@paytm"
+        )
+        rvRecentPayees.adapter = RecentPayeesAdapter(dummyPayees) { payeeVpa ->
+            (activity as? MainActivity)?.openPaymentForVpa(payeeVpa)
+        }
 
         // Expandable Notes setup
         val layoutNotesHeader = view.findViewById<LinearLayout>(R.id.layoutNotesHeader)
@@ -76,11 +88,45 @@ class HomeFragment : Fragment() {
         }
     }
 
-    inner class RecentPayeesAdapter(private val payees: List<String>) : RecyclerView.Adapter<RecentPayeesAdapter.ViewHolder>() {
+    private fun showSingleInputDialog(title: String, hintText: String, onSubmit: (String) -> Unit) {
+        val context = context ?: return
+        val builder = androidx.appcompat.app.AlertDialog.Builder(context)
+        builder.setTitle(title)
+
+        val input = android.widget.EditText(context).apply {
+            hint = hintText
+            setPadding(40, 30, 40, 30)
+        }
+        builder.setView(input)
+
+        builder.setPositiveButton("Proceed") { _, _ ->
+            val text = input.text.toString().trim()
+            if (text.isNotEmpty()) {
+                onSubmit(text)
+            } else {
+                Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show()
+            }
+        }
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
+    }
+
+    inner class RecentPayeesAdapter(
+        private val payees: List<Pair<String, String>>,
+        private val onPayeeClick: (String) -> Unit
+    ) : RecyclerView.Adapter<RecentPayeesAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val tvInitials: TextView = view.findViewById(R.id.tvInitials)
             val tvName: TextView = view.findViewById(R.id.tvName)
+
+            init {
+                view.setOnClickListener {
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        onPayeeClick(payees[adapterPosition].second)
+                    }
+                }
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -89,7 +135,7 @@ class HomeFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val name = payees[position]
+            val (name, vpa) = payees[position]
             holder.tvName.text = name
             holder.tvInitials.text = name.firstOrNull()?.toString()?.uppercase() ?: ""
         }
