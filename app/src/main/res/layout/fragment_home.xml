@@ -3,209 +3,179 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA">
+    android:background="?android:colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
+        <!-- Header Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_marginBottom="24dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvGreeting"
+                    style="@style/TextAppearance.TurantPay.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Good Morning," />
+                <TextView
+                    android:id="@+id/tvName"
+                    style="@style/TextAppearance.TurantPay.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Raj"
+                    android:textColor="?android:textColorPrimary" />
+            </LinearLayout>
 
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@mipmap/ic_launcher"
-                android:layout_marginBottom="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TurantPay"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="#1A73E8" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Instant. Offline. Secure."
-                android:textSize="14sp"
-                android:textColor="#757575"
-                android:textStyle="italic" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_logo"
+                android:background="@drawable/bg_icon_circle"
+                android:backgroundTint="@color/accent"
+                android:padding="8dp"/>
         </LinearLayout>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnScanQR"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="12dp"
-            android:clickable="true"
-            android:focusable="true">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@android:drawable/ic_menu_camera"
-                    app:tint="#1A73E8"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="  Scan Merchant QR"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnSendMobile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="12dp"
-            android:clickable="true"
-            android:focusable="true">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@android:drawable/ic_menu_call"
-                    app:tint="#4CAF50"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="  Send to Mobile Number"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnSendBank"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="12dp"
-            android:clickable="true"
-            android:focusable="true">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@android:drawable/ic_dialog_info"
-                    app:tint="#FF9800"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="  Send to Bank (IFSC)"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
+        <!-- Quick Actions Section -->
         <TextView
+            style="@style/TextAppearance.TurantPay.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Other Services"
-            android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="Quick Actions" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardCheckBalance"
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="12dp">
+            android:columnCount="2"
+            android:rowCount="2">
+
+            <!-- Send to Mobile -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/btnSendMobile"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_card_action"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@android:drawable/ic_menu_agenda" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_send_mobile"
+                    android:background="@drawable/bg_gradient_primary"
+                    android:padding="12dp" />
                 <TextView
+                    style="@style/TextAppearance.TurantPay.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  Check Balance"
-                    android:textSize="16sp" />
+                    android:layout_marginTop="8dp"
+                    android:text="Send to\nMobile"
+                    android:textAlignment="center" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardMiniStatement"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp">
+            <!-- Send to Bank -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/btnSendBank"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_columnWeight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_card_action"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@android:drawable/ic_menu_recent_history" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_send_bank"
+                    android:background="@drawable/bg_gradient_primary"
+                    android:padding="12dp" />
                 <TextView
+                    style="@style/TextAppearance.TurantPay.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  Mini Statement"
-                    android:textSize="16sp" />
+                    android:layout_marginTop="8dp"
+                    android:text="Send to\nBank"
+                    android:textAlignment="center" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <LinearLayout
+            <!-- Check Balance -->
+            <LinearLayout
+                android:id="@+id/btnCheckBalance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_card_action"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_balance"
+                    android:background="@drawable/bg_gradient_accent"
+                    android:padding="12dp" />
+                <TextView
+                    style="@style/TextAppearance.TurantPay.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Check\nBalance"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <!-- Mini Statement -->
+            <LinearLayout
+                android:id="@+id/btnMiniStatement"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_card_action"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_statement"
+                    android:background="@drawable/bg_gradient_accent"
+                    android:padding="12dp" />
+                <TextView
+                    style="@style/TextAppearance.TurantPay.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Mini\nStatement"
+                    android:textAlignment="center" />
+            </LinearLayout>
+        </GridLayout>
+
+        <!-- Placeholder for Recent Payees (Plan 3.3) -->
+        <FrameLayout
+            android:id="@+id/recentPayeesContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFF9C4"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="⚠️ Important Note"
-                android:textStyle="bold"
-                android:textColor="#F57F17"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="• JIO Sim Users cannot use *99# services due to network restrictions.\n• Please register your bank account first in the BHIM App to use these offline services.\n• No internet required \n• This is not a new innovation just gave UI (bridge) for Ussd Responses."
-                android:textColor="#F57F17"
-                android:textSize="13sp"
-                android:lineSpacingExtra="4dp"
-                android:layout_marginTop="8dp" />
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </ScrollView>
