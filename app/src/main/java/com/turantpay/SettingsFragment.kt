@@ -9,13 +9,17 @@ import androidx.fragment.app.Fragment
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
-    // Inside SettingsFragment.kt
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Check for Updates
+        view.findViewById<LinearLayout>(R.id.btnCheckUpdates).setOnClickListener {
+            (activity as? MainActivity)?.checkForAppUpdates()
+        }
+
         // Developer Link
         view.findViewById<LinearLayout>(R.id.btnDeveloper).setOnClickListener {
-            val developerUrl = "https://github.com/rajureddi/turantpay" // Replace with your actual link
+            val developerUrl = "https://github.com/rajureddi/turantpay"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(developerUrl))
             startActivity(intent)
         }
