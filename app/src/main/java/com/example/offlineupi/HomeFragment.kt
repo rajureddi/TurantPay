@@ -40,12 +40,13 @@ class HomeFragment : Fragment() {
         }
         tvGreeting.text = greeting
 
-        // Quick action click listeners with original USSD logic
+        // Quick action click listeners
         view.findViewById<LinearLayout>(R.id.btnSendMobile).setOnClickListener {
-            showMobilePayDialog()
+            showMobileNumberDialog()
         }
         view.findViewById<LinearLayout>(R.id.btnSendBank).setOnClickListener {
-            showBankPayOptionDialog()
+            // Direct dial for Send to Bank (*99*1*5#) without UPI ID dialog
+            (activity as? MainActivity)?.dialUssd("*99*1*5#")
         }
         view.findViewById<LinearLayout>(R.id.btnCheckBalance).setOnClickListener {
             (activity as? MainActivity)?.dialUssd("*99*3#")
@@ -65,11 +66,7 @@ class HomeFragment : Fragment() {
             "Neha" to "neha@paytm"
         )
         rvRecentPayees.adapter = RecentPayeesAdapter(dummyPayees) { payee ->
-            if (payee.all { it.isDigit() }) {
-                showMobilePayDialog(defaultPhone = payee)
-            } else {
-                (activity as? MainActivity)?.openPaymentForVpa(payee)
-            }
+            (activity as? MainActivity)?.openPaymentForVpa(payee)
         }
 
         // Expandable Notes setup
@@ -88,79 +85,26 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun showMobilePayDialog(defaultPhone: String = "") {
+    private fun showMobileNumberDialog(defaultPhone: String = "") {
         val safeContext = context ?: return
 
-        val layout = LinearLayout(safeContext).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(60, 50, 60, 50)
-        }
-
-        val phoneInput = android.widget.EditText(safeContext).apply {
-            hint = "10-Digit Mobile Number"
+        val input = android.widget.EditText(safeContext).apply {
+            hint = "Enter 10-Digit Mobile Number"
             inputType = android.text.InputType.TYPE_CLASS_PHONE
             if (defaultPhone.isNotEmpty()) setText(defaultPhone)
+            setPadding(50, 40, 50, 40)
         }
-
-        val amountInput = android.widget.EditText(safeContext).apply {
-            hint = "Enter Amount (₹)"
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER
-        }
-
-        layout.addView(phoneInput)
-        layout.addView(amountInput)
 
         androidx.appcompat.app.AlertDialog.Builder(safeContext)
-            .setTitle("Direct Pay to Mobile")
-            .setView(layout)
+            .setTitle("Send to Mobile")
+            .setView(input)
             .setCancelable(true)
-            .setPositiveButton("Pay Now") { _, _ ->
-                val phone = phoneInput.text.toString().trim()
-                val amount = amountInput.text.toString().trim()
-
+            .setPositiveButton("Next") { _, _ ->
+                val phone = input.text.toString().trim()
                 if (phone.length == 10) {
-                    if (amount.isNotEmpty()) {
-                        // Pre-filled USSD string as per requirement
-                        val directCode = "*99*1*1*$phone*$amount*1#"
-                        val mainAct = activity as? MainActivity
-                        mainAct?.setPendingTransaction(phone, amount)
-                        mainAct?.dialUssd(directCode)
-
-                        // Also trigger success receipt view
-                        val txId = "TXN" + System.currentTimeMillis().toString().takeLast(6)
-                        val timeStamp = java.text.SimpleDateFormat("dd MMM, hh:mm a", java.util.Locale.getDefault()).format(java.util.Date())
-                        val intent = android.content.Intent(context, SuccessActivity::class.java).apply {
-                            putExtra("is_success", true)
-                            putExtra("amount", amount)
-                            putExtra("vpa", phone)
-                            putExtra("txid", txId)
-                            putExtra("time", timeStamp)
-                        }
-                        startActivity(intent)
-                    } else {
-                        (activity as? MainActivity)?.openPaymentForVpa(phone)
-                    }
+                    (activity as? MainActivity)?.openPaymentForVpa(phone)
                 } else {
                     Toast.makeText(safeContext, "Please enter a valid 10-digit mobile number", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun showBankPayOptionDialog() {
-        val safeContext = context ?: return
-        val options = arrayOf("Send via Bank IFSC Code (*99*1*5#)", "Send via UPI ID / VPA")
-        
-        androidx.appcompat.app.AlertDialog.Builder(safeContext)
-            .setTitle("Send to Bank / VPA")
-            .setItems(options) { _, which ->
-                if (which == 0) {
-                    (activity as? MainActivity)?.dialUssd("*99*1*5#")
-                } else {
-                    showSingleInputDialog("Send via UPI ID", "Enter Payee UPI ID (e.g. name@upi)") { vpa ->
-                        (activity as? MainActivity)?.openPaymentForVpa(vpa)
-                    }
                 }
             }
             .setNegativeButton("Cancel", null)

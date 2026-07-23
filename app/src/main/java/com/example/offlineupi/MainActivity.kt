@@ -5,6 +5,8 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -115,12 +117,77 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
 
     // Function called after QR Scan (or by barcodeLauncher)
     fun handleQrResult(scannedData: String) {
-        val extractedVpa = if (scannedData.contains("pa=")) {
+        currentVpa = if (scannedData.contains("pa=")) {
             scannedData.substringAfter("pa=").substringBefore("&")
         } else {
             scannedData
         }
-        openPaymentForVpa(extractedVpa)
+
+        // 1. AUTOMATIC COPY TO CLIPBOARD
+        copyToClipboard(currentVpa)
+        Toast.makeText(this, "UPI ID Copied Automatically", Toast.LENGTH_SHORT).show()
+
+        // 2. Display QR Scan confirmation popup without asking for PIN/Amount
+        showQrScanDialog(currentVpa)
+    }
+
+    private fun copyToClipboard(text: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("UPI_ID", text)
+        clipboard.setPrimaryClip(clip)
+    }
+
+    private fun showQrScanDialog(vpa: String) {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(60, 40, 60, 40)
+            gravity = android.view.Gravity.CENTER_HORIZONTAL
+        }
+
+        val txtTitle = TextView(this).apply {
+            text = "Merchant Payment"
+            textSize = 20f
+            setPadding(0, 0, 0, 20)
+            setTypeface(null, android.graphics.Typeface.BOLD)
+        }
+
+        val vpaDisplay = TextView(this).apply {
+            text = vpa
+            textSize = 18f
+            setTextColor(android.graphics.Color.parseColor("#1565C0"))
+            setPadding(0, 10, 0, 10)
+            setTypeface(null, android.graphics.Typeface.BOLD)
+        }
+
+        val btnCopy = com.google.android.material.button.MaterialButton(this).apply {
+            text = "RE-COPY UPI ID"
+            setOnClickListener {
+                copyToClipboard(vpa)
+                Toast.makeText(context, "UPI ID Copied Again!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        val instructions = TextView(this).apply {
+            text = "\nINSTRUCTION:\nUPI ID is already COPIED.\nJust PASTE it in the next shown screen."
+            textSize = 15f
+            setTextColor(android.graphics.Color.parseColor("#D32F2F"))
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            setPadding(0, 20, 0, 20)
+        }
+
+        layout.addView(txtTitle)
+        layout.addView(vpaDisplay)
+        layout.addView(btnCopy)
+        layout.addView(instructions)
+
+        AlertDialog.Builder(this)
+            .setView(layout)
+            .setCancelable(true)
+            .setPositiveButton("Next / Start Payment") { _, _ ->
+                dialUssd("*99*1*3#")
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     override fun onPaymentConfirmed(amount: String, pin: String) {
