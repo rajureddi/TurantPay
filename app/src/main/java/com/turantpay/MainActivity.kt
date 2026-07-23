@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 
 class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentListener {
 
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
         setContentView(R.layout.activity_main)
 
         checkCallPermission()
+        checkForAppUpdates()
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val fabScan = findViewById<android.view.View>(R.id.fabScan)
@@ -75,6 +79,70 @@ class MainActivity : AppCompatActivity(), PaymentBottomSheetFragment.PaymentList
             options.setCaptureActivity(CustomCaptureActivity::class.java)
             barcodeLauncher.launch(options)
         }
+    }
+
+    fun checkForAppUpdates() {
+        Thread {
+            try {
+                val url = URL("https://api.github.com/repos/rajureddi/TurantPay/releases/latest")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.setRequestProperty("Accept", "application/vnd.github.v3+json")
+                connection.connectTimeout = 4000
+                connection.readTimeout = 4000
+
+                if (connection.responseCode == 200) {
+                    val responseText = connection.inputStream.bufferedReader().use { it.readText() }
+                    val jsonObject = JSONObject(responseText)
+                    val latestTag = jsonObject.optString("tag_name", "").replace("v", "").trim()
+                    val downloadUrl = jsonObject.optString("html_url", "https://github.com/rajureddi/TurantPay/releases/latest")
+
+                    val currentVersion = try {
+                        val pInfo = packageManager.getPackageInfo(packageName, 0)
+                        pInfo.versionName?.replace("v", "")?.trim() ?: "1.0.0"
+                    } catch (e: Exception) {
+                        "1.0.0"
+                    }
+
+                    if (isVersionNewer(latestTag, currentVersion)) {
+                        runOnUiThread {
+                            showUpdateAvailableDialog(latestTag, downloadUrl)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Silently ignore if offline or request fails
+            }
+        }.start()
+    }
+
+    private fun isVersionNewer(latest: String, current: String): Boolean {
+        try {
+            val latestParts = latest.split(".").map { it.toIntOrNull() ?: 0 }
+            val currentParts = current.split(".").map { it.toIntOrNull() ?: 0 }
+            val maxLen = maxOf(latestParts.size, currentParts.size)
+            for (i in 0 until maxLen) {
+                val l = latestParts.getOrElse(i) { 0 }
+                val c = currentParts.getOrElse(i) { 0 }
+                if (l > c) return true
+                if (l < c) return false
+            }
+        } catch (e: Exception) {
+            return latest > current
+        }
+        return false
+    }
+
+    private fun showUpdateAvailableDialog(latestVersion: String, downloadUrl: String) {
+        AlertDialog.Builder(this)
+            .setTitle("App Update Available 🚀")
+            .setMessage("A new version (v$latestVersion) of TurantPay is available on GitHub. Would you like to download the update?")
+            .setPositiveButton("Download") { _, _ ->
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl))
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun checkCallPermission() {
