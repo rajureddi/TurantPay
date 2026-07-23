@@ -1,5 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">offlineupi</string>
+    <!-- App Info -->
+    <string name="app_name">TurantPay</string>
+    <string name="app_tagline">Pay Offline. Pay Turant.</string>
     <string name="acc_desc">Automated PIN entry for UPI</string>
 
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_scan">Scan &amp; Pay</string>
+
+    <!-- Home Screen -->
+    <string name="greeting_morning">Good Morning</string>
+    <string name="greeting_afternoon">Good Afternoon</string>
+    <string name="greeting_evening">Good Evening</string>
+    <string name="home_quick_actions">Quick Actions</string>
+    <string name="home_recent_payees">Recent Payees</string>
+    <string name="home_important_note">Important Note</string>
+
+    <!-- Actions -->
+    <string name="action_scan_qr">Scan QR</string>
+    <string name="action_send_mobile">Send to Mobile</string>
+    <string name="action_send_bank">Send to Bank</string>
+    <string name="action_check_balance">Check Balance</string>
+    <string name="action_mini_statement">Mini Statement</string>
+
+    <!-- Payment -->
+    <string name="payment_confirm_title">Confirm Payment</string>
+    <string name="payment_enter_amount">Enter Amount</string>
+    <string name="payment_enter_pin">Enter UPI PIN</string>
+    <string name="payment_start">Start Payment</string>
+    <string name="payment_slide_to_pay">Slide to Pay</string>
+    <string name="payment_upi_id_copied">UPI ID Copied</string>
+
+    <!-- Success/Failure -->
+    <string name="result_success">Payment Successful</string>
+    <string name="result_failed">Payment Failed</string>
+    <string name="result_share_receipt">Share Receipt</string>
+    <string name="result_try_again">Try Again</string>
+    <string name="result_done">Done</string>
+    <string name="result_go_home">Go Home</string>
+
+    <!-- History -->
+    <string name="history_title">Transaction History</string>
+    <string name="history_empty">No transactions yet</string>
+    <string name="history_delete_confirm">Delete this record?</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_mode_auto">Auto Mode</string>
+    <string name="settings_mode_manual">Manual Mode</string>
+    <string name="settings_mode_desc">Auto mode uses accessibility to fill USSD screens automatically</string>
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_about">About</string>
+    <string name="settings_developer">Developer</string>
+    <string name="settings_helpline">NPCI Helpline: 1800-120-1740</string>
+    <string name="settings_version">Version 2.0.0</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">Pay Without Internet</string>
+    <string name="onboarding_desc_1">TurantPay uses *99# USSD codes to make UPI payments. No Wi-Fi or data needed.</string>
+    <string name="onboarding_title_2">Scan, Type, Send</string>
+    <string name="onboarding_desc_2">Scan merchant QR codes, enter amounts, and send money — all offline.</string>
+    <string name="onboarding_title_3">Choose Your Mode</string>
+    <string name="onboarding_desc_3">Auto mode fills USSD screens for you. Manual mode copies the UPI ID for you to paste.</string>
+    <string name="onboarding_get_started">Get Started</string>
+
+    <!-- Warnings -->
+    <string name="warning_jio">JIO SIM users cannot use *99# services due to network restrictions.</string>
+    <string name="warning_register">Please register your bank account in BHIM App first.</string>
+    <string name="warning_no_internet">No internet required</string>
+    <string name="warning_ussd_bridge">This app provides a modern UI for *99# USSD services.</string>
 </resources>

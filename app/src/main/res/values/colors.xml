@@ -1,5 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Primary Colors -->
+    <color name="primary">#1565C0</color>
+    <color name="primary_variant">#0D47A1</color>
+    <color name="primary_light">#42A5F5</color>
+    <color name="primary_medium">#1E88E5</color>
+
+    <!-- Accent/CTA Colors -->
+    <color name="accent">#FF6D00</color>
+    <color name="accent_light">#FF9100</color>
+    <color name="accent_glow">#FFAB40</color>
+    <color name="accent_glow_light">#FFD180</color>
+
+    <!-- Background Colors -->
+    <color name="bg_light">#F8F9FE</color>
+    <color name="bg_dark">#121212</color>
+
+    <!-- Surface Colors -->
+    <color name="surface_light">#FFFFFF</color>
+    <color name="surface_dark">#1E1E2E</color>
+
+    <!-- Card Colors -->
+    <color name="card_light">#FFFFFF</color>
+    <color name="card_dark">#2A2A3C</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary_light">#1A1A2E</color>
+    <color name="text_primary_dark">#E8E8F0</color>
+    <color name="text_secondary_light">#6B7280</color>
+    <color name="text_secondary_dark">#9CA3AF</color>
+
+    <!-- Status Colors -->
+    <color name="success">#00C853</color>
+    <color name="success_light">#69F0AE</color>
+    <color name="error">#FF1744</color>
+    <color name="error_light">#FF5252</color>
+    <color name="warning">#FFC107</color>
+    <color name="warning_dark">#F57F17</color>
+
+    <!-- Gradient Colors -->
+    <color name="gradient_start_blue">#0D47A1</color>
+    <color name="gradient_end_orange">#FF6D00</color>
+    <color name="gradient_dark_start">#121212</color>
+    <color name="gradient_dark_end">#1E1E2E</color>
+
+    <!-- Bottom Navigation Colors -->
+    <color name="nav_active">#FF6D00</color>
+    <color name="nav_inactive">#6B7280</color>
+    <color name="nav_bg_light">#FFFFFF</color>
+    <color name="nav_bg_dark">#1E1E2E</color>
+
+    <!-- Original Base Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

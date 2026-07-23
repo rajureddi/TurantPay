@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing Scale (4dp base) -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_base">16dp</dimen>
+    <dimen name="spacing_lg">20dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+    <dimen name="spacing_2xl">32dp</dimen>
+    <dimen name="spacing_3xl">48dp</dimen>
+
+    <!-- Corner Radius -->
+    <dimen name="radius_sm">8dp</dimen>
+    <dimen name="radius_md">12dp</dimen>
+    <dimen name="radius_card">16dp</dimen>
+    <dimen name="radius_button">12dp</dimen>
+    <dimen name="radius_bottom_sheet">24dp</dimen>
+    <dimen name="radius_qr_frame">20dp</dimen>
+    <dimen name="radius_circle">999dp</dimen>
+
+    <!-- Typography Sizes -->
+    <dimen name="text_xs">11sp</dimen>
+    <dimen name="text_sm">13sp</dimen>
+    <dimen name="text_body">15sp</dimen>
+    <dimen name="text_lg">17sp</dimen>
+    <dimen name="text_xl">20sp</dimen>
+    <dimen name="text_2xl">24sp</dimen>
+    <dimen name="text_3xl">28sp</dimen>
+    <dimen name="text_4xl">32sp</dimen>
+    <dimen name="text_hero">48sp</dimen>
+
+    <!-- Icon Sizes -->
+    <dimen name="icon_sm">20dp</dimen>
+    <dimen name="icon_md">24dp</dimen>
+    <dimen name="icon_lg">32dp</dimen>
+    <dimen name="icon_xl">40dp</dimen>
+    <dimen name="icon_2xl">48dp</dimen>
+    <dimen name="icon_hero">80dp</dimen>
+
+    <!-- Component Heights -->
+    <dimen name="button_height">52dp</dimen>
+    <dimen name="input_height">56dp</dimen>
+    <dimen name="bottom_nav_height">64dp</dimen>
+    <dimen name="card_min_height">72dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+
+    <!-- Elevation -->
+    <dimen name="elevation_card">2dp</dimen>
+    <dimen name="elevation_nav">8dp</dimen>
+    <dimen name="elevation_fab">6dp</dimen>
+    <dimen name="elevation_bottom_sheet">16dp</dimen>
+</resources>
