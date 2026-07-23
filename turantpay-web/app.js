@@ -3,11 +3,11 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // PWA Service Worker Registration with Cache Busting v13.0
+  // PWA Service Worker Registration with Cache Busting v14.0
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?v=13.0')
+    navigator.serviceWorker.register('./sw.js?v=14.0')
       .then(reg => {
-        console.log('[TurantPay PWA] Service Worker v13.0 Registered', reg);
+        console.log('[TurantPay PWA] Service Worker v14.0 Registered', reg);
         reg.update();
       })
       .catch(err => console.error('[TurantPay PWA] SW Registration Failed', err));
@@ -50,12 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnBackFromResult = document.getElementById('btnBackFromResult');
   const scannedVpaText = document.getElementById('scannedVpaText');
   const btnCopyVpa = document.getElementById('btnCopyVpa');
-  const resultInputAmount = document.getElementById('resultInputAmount');
-  const resultInputNote = document.getElementById('resultInputNote');
-  const btnResultSendMoney = document.getElementById('btnResultSendMoney');
-  const btnResultScanAnother = document.getElementById('btnResultScanAnother');
+
+  // Conditional Detail Display Rows
+  const rowMerchantName = document.getElementById('rowMerchantName');
+  const textMerchantName = document.getElementById('textMerchantName');
+  const rowAmount = document.getElementById('rowAmount');
+  const textScannedAmount = document.getElementById('textScannedAmount');
+  const rowNote = document.getElementById('rowNote');
+  const textScannedNote = document.getElementById('textScannedNote');
 
   // Action Buttons & Nav items
+  const btnResultSendMoney = document.getElementById('btnResultSendMoney');
+  const btnResultScanAnother = document.getElementById('btnResultScanAnother');
   const btnSendMobile = document.getElementById('btnSendMobile');
   const btnCheckBalance = document.getElementById('btnCheckBalance');
   const btnStartScan = document.getElementById('btnStartScan');
@@ -297,28 +303,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Gallery Upload Handlers
+  // Gallery Upload Handlers (Using Dedicated Reader Container)
   if (btnTopUpload) btnTopUpload.addEventListener('click', () => qrFileInput.click());
   if (btnGalleryUpload) btnGalleryUpload.addEventListener('click', () => qrFileInput.click());
 
   if (qrFileInput) {
     qrFileInput.addEventListener('change', (e) => {
-      if (e.target.files.length === 0) return;
+      if (!e.target.files || e.target.files.length === 0) return;
       const imageFile = e.target.files[0];
       
-      showToast("Processing QR Image from Gallery...");
+      showToast("Reading QR Image from Gallery...");
 
-      if (!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5Qrcode("reader");
-      }
+      // Stop camera scanner first if active
+      stopScanner();
 
-      html5QrcodeScanner.scanFile(imageFile, true)
+      const fileScanner = new Html5Qrcode("fileReader");
+      fileScanner.scanFile(imageFile, true)
         .then((decodedText) => {
+          fileScanner.clear();
           closeModal(qrModal);
           handleQrResult(decodedText);
         })
         .catch((err) => {
-          console.error("Gallery QR Error:", err);
+          console.error("Gallery decode error:", err);
+          fileScanner.clear();
           showToast("No valid UPI QR code found in selected image.");
         });
     });
@@ -334,18 +342,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
-  // FULL PAGE EXTRACTED RESULT SCREEN LOGIC
+  // FULL PAGE EXTRACTED RESULT SCREEN LOGIC (CONDITIONAL DETAILS ONLY)
   // ==========================================================================
   function handleQrResult(qrData) {
     let cleanData = decodeURIComponent(qrData);
+    let extractedMerchant = "";
     let extractedAmount = "";
     let extractedNote = "";
 
     if (cleanData.includes("pa=")) {
       scannedVpa = cleanData.substring(cleanData.indexOf("pa=") + 3).split("&")[0];
+      if (cleanData.includes("pn=")) {
+        extractedMerchant = cleanData.substring(cleanData.indexOf("pn=") + 3).split("&")[0];
+      }
+      if (cleanData.includes("am=")) {
+        extractedAmount = cleanData.substring(cleanData.indexOf("am=") + 3).split("&")[0];
+      }
+      if (cleanData.includes("tn=")) {
+        extractedNote = cleanData.substring(cleanData.indexOf("tn=") + 3).split("&")[0];
+      }
     } else if (cleanData.toLowerCase().startsWith("upi://pay")) {
       const urlParams = new URLSearchParams(cleanData.substring(cleanData.indexOf("?")));
       scannedVpa = urlParams.get("pa") || cleanData;
+      extractedMerchant = urlParams.get("pn") || "";
       extractedAmount = urlParams.get("am") || "";
       extractedNote = urlParams.get("tn") || "";
     } else {
@@ -355,12 +374,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto Copy VPA to Clipboard
     copyToClipboard(scannedVpa);
 
-    // Fill Full Page Result Fields
+    // Display Extracted UPI ID
     if (scannedVpaText) scannedVpaText.innerText = scannedVpa;
-    if (resultInputAmount) resultInputAmount.value = extractedAmount;
-    if (resultInputNote) resultInputNote.value = extractedNote;
 
-    // Show Full Page Result View
+    // CONDITIONAL ROW 1: Merchant / Payee Name (only shown if present in QR)
+    if (extractedMerchant && extractedMerchant.trim().length > 0) {
+      if (textMerchantName) textMerchantName.innerText = extractedMerchant;
+      if (rowMerchantName) rowMerchantName.style.display = 'flex';
+    } else {
+      if (rowMerchantName) rowMerchantName.style.display = 'none';
+    }
+
+    // CONDITIONAL ROW 2: Scanned Amount (only shown if present in QR)
+    if (extractedAmount && parseFloat(extractedAmount) > 0) {
+      if (textScannedAmount) textScannedAmount.innerText = `₹${extractedAmount}`;
+      if (rowAmount) rowAmount.style.display = 'flex';
+    } else {
+      if (rowAmount) rowAmount.style.display = 'none';
+    }
+
+    // CONDITIONAL ROW 3: Transaction Note / Remarks (only shown if present in QR)
+    if (extractedNote && extractedNote.trim().length > 0) {
+      if (textScannedNote) textScannedNote.innerText = extractedNote;
+      if (rowNote) rowNote.style.display = 'flex';
+    } else {
+      if (rowNote) rowNote.style.display = 'none';
+    }
+
+    // Open Full Page Result Screen
     if (fullPageResultScreen) {
       fullPageResultScreen.style.display = 'flex';
       setTimeout(() => fullPageResultScreen.classList.add('active'), 10);

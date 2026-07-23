@@ -722,7 +722,7 @@ body {
 }
 
 /* ==========================================================================
-   Full Page Extracted Result Screen UI
+   NEW: Scanned Details Screen UI with Green Checkmark Icon
    ========================================================================== */
 .full-page-result {
   position: absolute;
@@ -767,14 +767,46 @@ body {
   padding: 26px 22px;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
+}
+
+/* Top Success Icon with Tick Mark */
+.scanned-success-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.scanned-success-icon {
+  width: 72px;
+  height: 72px;
+  background: rgba(255, 82, 27, 0.12);
+  border: 2px solid var(--accent-sunset);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 30px var(--accent-sunset-glow);
+}
+
+.scanned-success-icon .check-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  font-size: 24px;
+  color: var(--accent-emerald);
+  background: var(--bg-app);
+  border-radius: 50%;
 }
 
 .vpa-hero-card {
   background: linear-gradient(135deg, rgba(255, 82, 27, 0.2), rgba(99, 102, 241, 0.3));
   border: 1px solid var(--accent-sunset);
   border-radius: var(--radius-lg);
-  padding: 26px 20px;
+  padding: 24px 20px;
   text-align: center;
   box-shadow: 0 10px 35px var(--accent-sunset-subtle);
   position: relative;
@@ -785,7 +817,7 @@ body {
   font-weight: 800;
   letter-spacing: 2.5px;
   color: var(--accent-sunset);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .vpa-address {
@@ -794,7 +826,7 @@ body {
   font-weight: 800;
   color: #FFFFFF;
   word-break: break-all;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .vpa-copy-btn {
@@ -810,6 +842,31 @@ body {
   align-items: center;
   gap: 8px;
   box-shadow: 0 6px 20px var(--accent-sunset-glow);
+}
+
+/* Detail Display Rows */
+.detail-row-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.detail-row-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+}
+
+.detail-row-value {
+  font-family: var(--font-brand);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--accent-sunset);
 }
 
 .btn-secondary-outline {
