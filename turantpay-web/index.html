@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TurantPay — Energetic Orange & Deep Blue Offline UPI (*99#)</title>
+  
+  <!-- PWA Metadata -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0B132B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Offline UPI payment application powered by *99# USSD technology with Energetic Orange & Deep Royal Blue UI.">
+  
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <!-- Stylesheet (Authentic TurantPay Palette - Cache Busted v9.0) -->
+  <link rel="stylesheet" href="styles.css?v=9.0">
+
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Top Header Bar -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <span class="material-symbols-outlined" style="font-size: 26px;">bolt</span>
+        </div>
+        <div class="brand-name">TurantPay</div>
+      </div>
+      <div class="badge-offline">
+        <div class="badge-dot"></div>
+        OFFLINE READY
+      </div>
+    </header>
+
+    <!-- PWA Installation Banner -->
+    <div id="pwaBanner" class="pwa-banner" style="display: none;">
+      <div class="pwa-banner-text">
+        <h4>INSTALL TURANTPAY WEB APP</h4>
+        <p>Use offline without internet connection</p>
+      </div>
+      <button id="btnInstall" class="btn-install">INSTALL</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="app-content">
+      
+      <!-- Greeting Section -->
+      <section class="greeting-section">
+        <div id="greetingText" class="greeting-subtitle">GOOD DAY,</div>
+        <h1 class="greeting-title">Offline UPI (*99#)</h1>
+      </section>
+
+      <!-- Hero Action Card (Scan & Pay) -->
+      <section class="hero-card">
+        <div class="hero-card-header">
+          <div class="hero-card-icon">
+            <span class="material-symbols-outlined" style="font-size: 28px;">qr_code_scanner</span>
+          </div>
+          <div class="hero-card-info">
+            <h3>Scan & Pay</h3>
+            <p>Scan merchant QR, auto-copy VPA & dial *99*1*3#</p>
+          </div>
+        </div>
+        <button id="btnStartScan" class="btn-hero-action">
+          <span class="material-symbols-outlined">photo_camera</span>
+          SCAN MERCHANT QR
+        </button>
+      </section>
+
+      <!-- Quick Actions Grid (Send via Mobile & Check Balance ONLY) -->
+      <section>
+        <div class="section-title">
+          <span>QUICK ACTIONS</span>
+          <span class="material-symbols-outlined" style="font-size: 16px; color: var(--accent-orange);">flash_on</span>
+        </div>
+
+        <div class="quick-grid">
+          <!-- Send via Mobile -->
+          <div id="btnSendMobile" class="action-card">
+            <div class="action-icon-wrapper">
+              <span class="material-symbols-outlined">phone_android</span>
+            </div>
+            <div>
+              <div class="action-card-title">Send to Mobile</div>
+              <div class="action-card-desc">Dials *99*1*1*Mobile*Amount*1#</div>
+            </div>
+          </div>
+
+          <!-- Check Balance -->
+          <div id="btnCheckBalance" class="action-card">
+            <div class="action-icon-wrapper">
+              <span class="material-symbols-outlined">account_balance_wallet</span>
+            </div>
+            <div>
+              <div class="action-card-title">Check Balance</div>
+              <div class="action-card-desc">Dials *99*3#</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- iOS & Mobile Dialer Helper Card -->
+      <section class="info-card">
+        <span class="material-symbols-outlined">shield_lock</span>
+        <p><strong>iOS & Smartphone Guide:</strong> Tapping payment actions will automatically open your phone's native dialer. Simply press the green Call button to execute USSD requests.</p>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" id="btnNavHome">
+        <span class="material-symbols-outlined">home</span>
+        Home
+      </button>
+
+      <!-- Floating Orange FAB -->
+      <button id="fabScan" class="fab-scan" aria-label="Scan QR Code">
+        <span class="material-symbols-outlined" style="font-size: 32px;">qr_code_scanner</span>
+      </button>
+
+      <button class="nav-item" id="btnNavSettings">
+        <span class="material-symbols-outlined">settings</span>
+        Settings
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- Modal 1: Send via Mobile Sheet -->
+  <div id="mobileModal" class="modal-overlay">
+    <div class="bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <h3 class="sheet-title">Send via Mobile</h3>
+        <button class="btn-close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="inputMobile">RECIPIENT MOBILE NUMBER</label>
+        <input type="tel" id="inputMobile" class="input-field" placeholder="Enter 10-digit mobile (e.g. 9876543210)" maxlength="10">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="inputAmount">AMOUNT (₹)</label>
+        <input type="number" id="inputAmount" class="input-field" placeholder="Enter amount in ₹ (e.g. 500)" min="1">
+      </div>
+
+      <button id="btnConfirmMobilePay" class="btn-action-submit">
+        <span class="material-symbols-outlined">call</span>
+        OPEN DIALER (*99*1*1*Mobile*Amount*1#)
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal 2: QR Camera Scanner Viewport -->
+  <div id="qrModal" class="modal-overlay">
+    <div class="bottom-sheet" style="padding-bottom: 24px;">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <h3 class="sheet-title">Scan Merchant QR</h3>
+        <button class="btn-close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <p style="font-size: 12px; color: var(--text-dim);">Align QR code within the frame</p>
+
+      <div class="scanner-container">
+        <div id="reader"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: QR Result & Clipboard Sheet -->
+  <div id="qrResultModal" class="modal-overlay">
+    <div class="bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <h3 class="sheet-title">Scanned UPI ID</h3>
+        <button class="btn-close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Display Scanned VPA Box -->
+      <div style="background: var(--accent-orange-subtle); border: 1px solid var(--accent-orange); border-radius: var(--radius-md); padding: 18px; text-align: center; box-shadow: 0 4px 20px var(--accent-orange-glow);">
+        <div style="font-size: 11px; color: var(--accent-orange); font-weight: 800; letter-spacing: 1.5px; margin-bottom: 6px;">EXTRACTED VPA</div>
+        <div id="scannedVpaText" style="font-family: var(--font-brand); font-size: 20px; font-weight: 800; color: #FFFFFF; word-break: break-all;">address@upi</div>
+      </div>
+
+      <!-- Auto-copied indicator -->
+      <div style="font-size: 12px; color: var(--accent-orange); display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;">
+        <span class="material-symbols-outlined" style="font-size: 16px;">content_copy</span>
+        UPI ID automatically copied to your clipboard!
+      </div>
+
+      <!-- User Instruction Note -->
+      <div class="note-box" style="background: rgba(255, 255, 255, 0.03); border: 1px dashed var(--accent-orange); border-radius: var(--radius-md); padding: 14px; display: flex; align-items: flex-start; gap: 10px;">
+        <span class="material-symbols-outlined" style="color: var(--accent-orange); font-size: 20px;">info</span>
+        <div style="font-size: 12px; color: var(--text-dim); line-height: 1.5;">
+          <strong style="color: var(--accent-orange);">Next Step:</strong> After tapping below to dial <strong>*99*1*3#</strong>, paste this copied UPI ID in the next screen on your dialer.
+        </div>
+      </div>
+
+      <!-- Open Dialer Button (*99*1*3#) -->
+      <button id="btnDialVpaUssd" class="btn-action-submit">
+        <span class="material-symbols-outlined">call</span>
+        OPEN DIALER (*99*1*3#)
+      </button>
+
+      <!-- Re-copy UPI ID Button -->
+      <button id="btnRecopyUpi" style="background: transparent; border: 1px solid var(--border-orange); color: var(--accent-orange); padding: 14px; border-radius: var(--radius-md); font-family: var(--font-brand); font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span class="material-symbols-outlined" style="font-size: 18px;">content_copy</span>
+        RE-COPY UPI ID
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal 4: Settings & About Sheet -->
+  <div id="settingsModal" class="modal-overlay">
+    <div class="bottom-sheet" style="max-height: 85vh; overflow-y: auto;">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <h3 class="sheet-title">Settings & About</h3>
+        <button class="btn-close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Section 0: PWA App Installation Option -->
+      <div class="settings-card" style="border-color: var(--accent-orange); background: linear-gradient(135deg, rgba(21, 101, 192, 0.3), rgba(255, 109, 0, 0.15));">
+        <div class="settings-card-title">
+          <span class="material-symbols-outlined">download_for_offline</span>
+          App Installation
+        </div>
+        <p class="settings-card-text" style="margin-bottom: 12px;">
+          Install TurantPay on your home screen to use it as a standalone app 100% offline without needing internet.
+        </p>
+        <button id="btnInstallSettings" class="btn-action-submit" style="margin-top: 0; padding: 14px;">
+          <span class="material-symbols-outlined">install_mobile</span>
+          INSTALL TURANTPAY APP
+        </button>
+      </div>
+
+      <!-- Section 1: About TurantPay -->
+      <div class="settings-card">
+        <div class="settings-card-title">
+          <span class="material-symbols-outlined">bolt</span>
+          About TurantPay
+        </div>
+        <p class="settings-card-text">
+          <strong>TurantPay</strong> is an offline-first digital payments web application designed for India. It bridges smart devices with NPCI's <code>*99#</code> USSD platform, allowing you to send money, scan QR codes, and check bank balance without an active internet connection.
+        </p>
+      </div>
+
+      <!-- Section 2: About *99# USSD -->
+      <div class="settings-card">
+        <div class="settings-card-title">
+          <span class="material-symbols-outlined">cell_tower</span>
+          About *99# USSD Service
+        </div>
+        <p class="settings-card-text">
+          <code>*99#</code> is NPCI’s National Unified USSD Platform (NUUP). It brings banking services across all telecom service providers in India over basic cellular signals. Transactions are processed directly by your registered bank using GSM network channels.
+        </p>
+      </div>
+
+      <!-- Section 3: Developer Info & Link -->
+      <div class="settings-card" style="border-color: var(--accent-orange);">
+        <div class="settings-card-title">
+          <span class="material-symbols-outlined">code</span>
+          Developer Information
+        </div>
+        <p class="settings-card-text" style="margin-bottom: 12px;">
+          Developed with ❤️ for Bharat by <strong>Raju Reddi</strong>. Dedicated to building accessible offline payment solutions for everyone.
+        </p>
+        
+        <a href="https://github.com/rajureddi" target="_blank" rel="noopener noreferrer" class="btn-developer-link">
+          <span class="material-symbols-outlined">open_in_new</span>
+          GitHub: @rajureddi
+        </a>
+      </div>
+
+      <div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+        TurantPay Web Version 2.0 (PWA) • Built Offline-First
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: First-Time / Auto Install Popup Modal (Always Active on Load) -->
+  <div id="installPromptModal" class="modal-overlay">
+    <div class="bottom-sheet" style="text-align: center; gap: 20px;">
+      <div class="sheet-handle"></div>
+      
+      <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent-orange), var(--primary-blue)); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 6px 25px var(--accent-orange-glow);">
+        <span class="material-symbols-outlined" style="font-size: 36px; color: #FFFFFF;">bolt</span>
+      </div>
+
+      <div>
+        <h3 class="sheet-title" style="font-size: 24px;">Install TurantPay App</h3>
+        <p style="font-size: 13px; color: var(--text-dim); margin-top: 6px; line-height: 1.5;">
+          Install TurantPay Web App on your device to access offline UPI payments anytime, directly from your home screen!
+        </p>
+      </div>
+
+      <button id="btnConfirmPopupInstall" class="btn-action-submit">
+        <span class="material-symbols-outlined">install_mobile</span>
+        INSTALL WEB VERSION NOW
+      </button>
+
+      <button class="btn-close-popup" id="btnDismissInstallPopup" style="background: transparent; border: none; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; padding: 6px;">
+        Maybe Later
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div id="toast" class="toast">
+    <span class="material-symbols-outlined" style="color: var(--accent-orange);">check_circle</span>
+    <span class="toast-text">Notification message</span>
+  </div>
+
+  <!-- Application Logic (Cache Busted v9.0) -->
+  <script src="app.js?v=9.0"></script>
+
+</body>
+</html>
