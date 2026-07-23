@@ -3,52 +3,53 @@ package com.example.offlineupi
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.*
-import androidx.appcompat.app.AlertDialog
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
-// Corrected: Uses fragment_history layout
 class HistoryFragment : Fragment(R.layout.fragment_history) {
+
+    private lateinit var rvHistory: RecyclerView
+    private lateinit var layoutEmptyState: LinearLayout
+    private val transactionList = mutableListOf<TransactionModel>()
+    private lateinit var adapter: HistoryAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val listView = view.findViewById<ListView>(R.id.historyListView)
-        loadHistory(listView)
+        
+        rvHistory = view.findViewById(R.id.rvHistory)
+        layoutEmptyState = view.findViewById(R.id.layoutEmptyState)
+
+        rvHistory.layoutManager = LinearLayoutManager(requireContext())
+        adapter = HistoryAdapter(transactionList) { transaction ->
+            // Open details (to be implemented in Plan 5.3)
+        }
+        rvHistory.adapter = adapter
+
+        loadHistory()
     }
 
-    private fun loadHistory(listView: ListView) {
+    fun loadHistory() {
         val prefs = requireActivity().getSharedPreferences("OfflineUPIPrefs", Context.MODE_PRIVATE)
         val rawData = prefs.getString("history", "") ?: ""
-        val entries = rawData.split(";").filter { it.isNotEmpty() }.toMutableList()
+        val entries = rawData.split(";").filter { it.isNotEmpty() }
 
-        // Using simple_list_item_2 to show Name/Amount and Date/ID
-        val adapter = object : ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_2, android.R.id.text1, entries) {
-            override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View {
-                val v = super.getView(position, convertView, parent)
-                val t1 = v.findViewById<TextView>(android.R.id.text1)
-                val t2 = v.findViewById<TextView>(android.R.id.text2)
-
-                val data = entries[position].split("|") // Format: Date|VPA|Amount|ID
-                if (data.size >= 4) {
-                    t1.text = "₹${data[2]} to ${data[1]}"
-                    t2.text = "${data[0]} • ID: ${data[3]}"
-                }
-
-                // Long press to delete
-                v.setOnLongClickListener {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("Delete History?")
-                        .setMessage("Remove this record?")
-                        .setPositiveButton("Delete") { _, _ ->
-                            entries.removeAt(position)
-                            prefs.edit().putString("history", entries.joinToString(";")).apply()
-                            loadHistory(listView)
-                        }.setNegativeButton("Cancel", null).show()
-                    true
-                }
-                return v
+        transactionList.clear()
+        for (entry in entries) {
+            val data = entry.split("|") // Date|VPA|Amount|ID
+            if (data.size >= 4) {
+                transactionList.add(TransactionModel(data[0], data[1], data[2], data[3]))
             }
         }
-        listView.adapter = adapter
+
+        if (transactionList.isEmpty()) {
+            layoutEmptyState.visibility = View.VISIBLE
+            rvHistory.visibility = View.GONE
+        } else {
+            layoutEmptyState.visibility = View.GONE
+            rvHistory.visibility = View.VISIBLE
+        }
+        adapter.notifyDataSetChanged()
     }
 }
