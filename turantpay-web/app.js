@@ -3,11 +3,11 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // PWA Service Worker Registration with Cache Busting v9.0
+  // PWA Service Worker Registration with Cache Busting v10.0
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?v=9.0')
+    navigator.serviceWorker.register('./sw.js?v=10.0')
       .then(reg => {
-        console.log('[TurantPay PWA] Service Worker v9.0 Registered', reg);
+        console.log('[TurantPay PWA] Service Worker v10.0 Registered', reg);
         reg.update();
       })
       .catch(err => console.error('[TurantPay PWA] SW Registration Failed', err));
@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
         deferredPrompt = null;
       });
     } else {
-      // Fallback instructions for iOS Safari / Chrome preview
       showToast("To Install: Tap browser Share/Menu → select 'Add to Home Screen'");
       setTimeout(() => {
         alert("📲 To Install TurantPay Web App:\n\n1. Tap your browser menu or Share button (iOS/Android)\n2. Select 'Add to Home Screen'\n3. TurantPay will install as an offline app!");
@@ -132,11 +131,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 5. Modal Controllers
   function openModal(modal) {
-    if (modal) modal.classList.add('active');
+    if (modal) {
+      modal.classList.add('active');
+      modal.style.display = 'flex';
+    }
   }
 
   function closeModal(modal) {
-    if (modal) modal.classList.remove('active');
+    if (modal) {
+      modal.classList.remove('active');
+      setTimeout(() => {
+        if (!modal.classList.contains('active')) {
+          modal.style.display = 'none';
+        }
+      }, 300);
+    }
     if (modal === qrModal && html5QrcodeScanner) {
       stopScanner();
     }
@@ -206,27 +215,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Feature 3: Scan & Pay QR Flow (*99*1*3# + auto copy VPA)
+  // Feature 3: FAST Scan & Pay QR Flow (*99*1*3# + auto copy VPA)
   function startScanner() {
     openModal(qrModal);
     if (!html5QrcodeScanner) {
       html5QrcodeScanner = new Html5Qrcode("reader");
     }
 
-    const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+    // Optimized configuration for fast scanning across the entire camera view
+    const config = { 
+      fps: 25, 
+      qrbox: (viewfinderWidth, viewfinderHeight) => {
+        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+        const qrSize = Math.floor(minEdge * 0.85);
+        return { width: qrSize, height: qrSize };
+      },
+      experimentalFeatures: {
+        useBarCodeDetectorIfSupported: true
+      }
+    };
+
+    const onScanSuccess = (decodedText) => {
+      // 1. Instantly process result and open result sheet
+      handleQrResult(decodedText);
+      // 2. Hide scan modal immediately
+      if (qrModal) {
+        qrModal.classList.remove('active');
+        qrModal.style.display = 'none';
+      }
+      // 3. Stop camera background task safely
+      if (html5QrcodeScanner) {
+        html5QrcodeScanner.stop().catch(err => console.log("Scanner stop notice:", err));
+      }
+    };
     
     html5QrcodeScanner.start(
       { facingMode: "environment" },
       config,
-      (decodedText) => {
-        stopScanner();
-        closeModal(qrModal);
-        handleQrResult(decodedText);
-      },
-      (errorMessage) => {}
+      onScanSuccess,
+      () => {}
     ).catch(err => {
-      console.error("Camera access error:", err);
-      showToast("Camera access error.");
+      console.warn("Camera environment failed, trying default camera:", err);
+      // Fallback try default camera
+      html5QrcodeScanner.start(
+        { facingMode: "user" },
+        config,
+        onScanSuccess,
+        () => {}
+      ).catch(e => {
+        showToast("Camera access error. Please allow camera permissions.");
+      });
     });
   }
 
@@ -239,14 +277,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handleQrResult(qrData) {
-    if (qrData.includes("pa=")) {
-      scannedVpa = qrData.substring(qrData.indexOf("pa=") + 3).split("&")[0];
+    let cleanData = decodeURIComponent(qrData);
+    if (cleanData.includes("pa=")) {
+      scannedVpa = cleanData.substring(cleanData.indexOf("pa=") + 3).split("&")[0];
+    } else if (cleanData.toLowerCase().startsWith("upi://pay")) {
+      const urlParams = new URLSearchParams(cleanData.substring(cleanData.indexOf("?")));
+      scannedVpa = urlParams.get("pa") || cleanData;
     } else {
-      scannedVpa = qrData;
+      scannedVpa = cleanData;
     }
 
+    // Auto Copy to Clipboard
     copyToClipboard(scannedVpa);
     
+    // Display result sheet
     if (scannedVpaText) scannedVpaText.innerText = scannedVpa;
     openModal(qrResultModal);
     showToast("UPI ID Copied to Clipboard!");
