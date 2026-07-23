@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="?android:colorBackground">
+
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Amount Entry State -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paying to"
+                style="@style/TextAppearance.TurantPay.Caption" />
+
+            <TextView
+                android:id="@+id/tvPayeeVpa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="user@upi"
+                style="@style/TextAppearance.TurantPay.Title"
+                android:textColor="@color/accent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    android:textColor="?android:textColorPrimary"/>
+                <EditText
+                    android:id="@+id/etAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:inputType="numberDecimal"
+                    android:textSize="56sp"
+                    android:textStyle="bold"
+                    android:hint="0"
+                    android:textColor="?android:textColorPrimary"
+                    android:gravity="center"
+                    android:minWidth="100dp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnProceedToPin"
+                style="@style/Widget.TurantPay.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:text="Proceed to Pay" />
+        </LinearLayout>
+
+        <!-- PIN Entry State -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enter 6-digit UPI PIN"
+                style="@style/TextAppearance.TurantPay.Title" />
+
+            <LinearLayout
+                android:id="@+id/layoutPinDots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
+                android:orientation="horizontal">
+                <View android:layout_width="16dp" android:layout_height="16dp" android:layout_margin="8dp" android:background="@drawable/bg_pin_dot" />
+                <View android:layout_width="16dp" android:layout_height="16dp" android:layout_margin="8dp" android:background="@drawable/bg_pin_dot" />
+                <View android:layout_width="16dp" android:layout_height="16dp" android:layout_margin="8dp" android:background="@drawable/bg_pin_dot" />
+                <View android:layout_width="16dp" android:layout_height="16dp" android:layout_margin="8dp" android:background="@drawable/bg_pin_dot" />
+                <View android:layout_width="16dp" android:layout_height="16dp" android:layout_margin="8dp" android:background="@drawable/bg_pin_dot" />
+                <View android:layout_width="16dp" android:layout_height="16dp" android:layout_margin="8dp" android:background="@drawable/bg_pin_dot" />
+            </LinearLayout>
+
+            <GridLayout
+                android:id="@+id/layoutKeypad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:rowCount="4"
+                android:useDefaultMargins="true"
+                android:alignmentMode="alignBounds">
+                
+                <!-- We will add buttons dynamically or just define them here. Let's define them here -->
+                <Button android:text="1" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Button android:text="2" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Button android:text="3" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Button android:text="4" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Button android:text="5" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Button android:text="6" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Button android:text="7" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Button android:text="8" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Button android:text="9" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <Space />
+                <Button android:text="0" style="?android:attr/borderlessButtonStyle" android:textSize="24sp" android:textColor="?android:textColorPrimary" />
+                <!-- Backspace icon -->
+                <ImageButton android:src="@android:drawable/ic_input_delete" style="?android:attr/borderlessButtonStyle" app:tint="?android:textColorPrimary" />
+            </GridLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnStartPayment"
+                style="@style/Widget.TurantPay.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Send Payment"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+    </ViewFlipper>
+
+</LinearLayout>
